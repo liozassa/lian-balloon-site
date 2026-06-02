@@ -3,24 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>חיוך על חוט - חנות בלונים</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <title>חיוך על חוט - קטלוג בלונים</title>
+    <link href="https://fonts.googleapis.com/css?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-
-    <script src="config.js"></script>
-
     <style>
         :root {
-            --primary-color: #ff6b6b; 
+            --primary-color: #ff6b6b;
             --primary-hover: #ff5252;
-            --secondary-color: #f7f7f7; 
-            --text-color: #333;
-            --price-color: #2ecc71; 
-            --stock-color: #7f8c8d; 
+            --secondary-color: #f7f7f7;
+            --text-color: #333333;
+            --price-color: #2ecc71;
+            --stock-color: #7f8c8d;
         }
-
         body {
             font-family: 'Heebo', sans-serif;
             background-color: var(--secondary-color);
@@ -29,7 +23,6 @@
             direction: rtl;
             overflow-x: hidden;
         }
-
         header {
             background-color: #fff;
             padding: 20px;
@@ -43,21 +36,17 @@
             align-items: center;
             justify-content: center;
         }
-
         header img {
             max-width: 100%;
             height: 120px;
             object-fit: contain;
             margin-bottom: 5px;
         }
-
         header p {
             margin: 0;
             font-size: 1.1em;
             color: var(--stock-color);
         }
-
-        /* אייקון עגלה למעלה */
         #cart-icon-container {
             position: absolute;
             left: 20px;
@@ -75,11 +64,9 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: transform 0.2s;
         }
-
         #cart-icon-container:hover {
             transform: scale(1.1);
         }
-
         #cart-count {
             position: absolute;
             top: -5px;
@@ -95,8 +82,6 @@
             align-items: center;
             justify-content: center;
         }
-
-        /* עיצוב כפתורי הקטגוריות */
         #categories-container {
             display: flex;
             justify-content: center;
@@ -106,7 +91,6 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
         .category-btn {
             background-color: #fff;
             color: var(--primary-color);
@@ -119,17 +103,14 @@
             font-size: 1em;
             transition: all 0.3s ease;
         }
-
         .category-btn:hover {
             background-color: #ffeaea;
         }
-
         .category-btn.active {
             background-color: var(--primary-color);
             color: #fff;
             box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
         }
-
         #catalog-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -138,7 +119,6 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
         .product-card {
             background-color: #fff;
             border-radius: 15px;
@@ -148,32 +128,27 @@
             display: flex;
             flex-direction: column;
         }
-
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-
         .product-image {
             width: 100%;
             height: 250px;
             background-position: center;
             background-repeat: no-repeat;
         }
-
         .product-details {
             padding: 20px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
         }
-
         .product-title {
             font-size: 1.4em;
             margin: 0 0 10px;
             font-weight: 700;
         }
-
         .product-description {
             font-size: 0.95em;
             color: #666;
@@ -181,7 +156,6 @@
             line-height: 1.5;
             flex-grow: 1;
         }
-
         .product-meta {
             display: flex;
             justify-content: space-between;
@@ -191,13 +165,11 @@
             padding-top: 15px;
             margin-bottom: 15px;
         }
-
         .product-price {
             font-size: 1.5em;
             color: var(--price-color);
             font-weight: 700;
         }
-
         .product-stock {
             font-size: 0.9em;
             color: var(--stock-color);
@@ -205,13 +177,10 @@
             padding: 5px 10px;
             border-radius: 20px;
         }
-
         .out-of-stock {
             color: #e74c3c;
             background-color: #fadbd8;
         }
-
-        /* כפתור הוספה לעגלה */
         .add-to-cart-btn {
             background-color: var(--primary-color);
             color: white;
@@ -225,17 +194,13 @@
             transition: background-color 0.3s;
             width: 100%;
         }
-
         .add-to-cart-btn:hover {
             background-color: var(--primary-hover);
         }
-
         .add-to-cart-btn:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
-
-        /* עיצוב חלון העגלה הצדדי */
         #cart-sidebar {
             position: fixed;
             top: 0;
@@ -250,11 +215,9 @@
             display: flex;
             flex-direction: column;
         }
-
         #cart-sidebar.open {
             left: 0;
         }
-
         .cart-header {
             padding: 20px;
             background: var(--primary-color);
@@ -263,12 +226,10 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .cart-header h2 {
             margin: 0;
             font-size: 1.5em;
         }
-
         .close-cart-btn {
             background: none;
             border: none;
@@ -276,13 +237,11 @@
             font-size: 1.5em;
             cursor: pointer;
         }
-
         .cart-items-container {
             padding: 20px;
             flex-grow: 1;
             overflow-y: auto;
         }
-
         .cart-item {
             display: flex;
             justify-content: space-between;
@@ -290,21 +249,17 @@
             border-bottom: 1px solid #eee;
             padding: 10px 0;
         }
-
         .cart-item-details {
             flex-grow: 1;
         }
-
         .cart-item-title {
             font-weight: bold;
             margin-bottom: 5px;
         }
-
         .cart-item-price {
             color: var(--price-color);
             font-size: 0.9em;
         }
-
         .remove-item-btn {
             background: #ffeaa7;
             color: #d63031;
@@ -315,13 +270,11 @@
             font-weight: bold;
             margin-right: 10px;
         }
-
         .cart-footer {
             padding: 20px;
             border-top: 2px solid #eee;
             background: #fdfdfd;
         }
-
         .cart-total {
             display: flex;
             justify-content: space-between;
@@ -329,7 +282,6 @@
             font-weight: bold;
             margin-bottom: 15px;
         }
-
         .checkout-btn {
             background-color: #25D366;
             color: white;
@@ -346,11 +298,9 @@
             justify-content: center;
             gap: 10px;
         }
-
         .checkout-btn:hover {
             background-color: #1ebe5d;
         }
-
         #cart-overlay {
             position: fixed;
             top: 0;
@@ -361,277 +311,276 @@
             z-index: 1500;
             display: none;
         }
-
         #cart-overlay.show {
             display: block;
         }
-
         #loading, #error-message {
             text-align: center;
             font-size: 1.2em;
             margin-top: 50px;
             color: var(--stock-color);
         }
-
         #error-message {
             color: #e74c3c;
             display: none;
         }
-
         @media (max-width: 600px) {
-            #catalog-container { padding: 20px; gap: 20px; }
-            #categories-container { padding: 20px 20px 0; }
-            header img { height: 90px; }
-            #cart-icon-container { width: 40px; height: 40px; font-size: 1.2em; top: 15px; left: 15px; }
-            #cart-sidebar { width: 300px; }
+            #catalog-container {
+                padding: 20px;
+                gap: 20px;
+            }
+            #categories-container {
+                padding: 20px 20px 0;
+            }
+            header img {
+                height: 90px;
+            }
+            #cart-icon-container {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2em;
+                top: 15px;
+                left: 15px;
+            }
+            #cart-sidebar {
+                width: 300px;
+            }
         }
     </style>
 </head>
 <body>
-
-<header>
-    <img id="header-logo" alt="חיוך על חוט - לוגו">
-    <p>קטלוג הבלונים החגיגי שלנו</p>
-    
-    <div id="cart-icon-container" onclick="toggleCart()">
-        🛒
-        <div id="cart-count">0</div>
-    </div>
-</header>
-
-<div id="loading">טוען קטלוג מוצרים...</div>
-<div id="error-message">אופס! אירעה שגיאה בטעינת הנתונים. ודא שהקישור תקין.</div>
-
-<div id="categories-container">
-    </div>
-
-<div id="catalog-container">
-    </div>
-
-<div id="cart-overlay" onclick="toggleCart()"></div>
-<div id="cart-sidebar">
-    <div class="cart-header">
-        <h2>העגלה שלי 🎈</h2>
-        <button class="close-cart-btn" onclick="toggleCart()">✖</button>
-    </div>
-    <div class="cart-items-container" id="cart-items">
-    </div>
-    <div class="cart-footer">
-        <div class="cart-total">
-            <span>סך הכל:</span>
-            <span id="cart-total-price">₪0.00</span>
+    <header>
+        <img id="header-logo" alt="לוגו חיוך על חוט">
+        <p>קטלוג הבלונים החגיגי שלנו</p>
+        <div id="cart-icon-container" onclick="toggleCart()">
+            🛒
+            <div id="cart-count">0</div>
         </div>
-        <button class="checkout-btn" onclick="sendWhatsAppOrder()">
-            שלח הזמנה בוואטסאפ 💬
-        </button>
+    </header>
+
+    <div id="loading">טוען קטלוג מוצרים...</div>
+    <div id="error-message">אופס! אירעה שגיאה בטעינת הנתונים. ודא שהקישור תקין.</div>
+    
+    <div id="categories-container"></div>
+    <div id="catalog-container"></div>
+    
+    <div id="cart-overlay" onclick="toggleCart()"></div>
+    <div id="cart-sidebar">
+        <div class="cart-header">
+            <h2>העגלה שלי</h2>
+            <button class="close-cart-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items-container" id="cart-items"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>סך הכל:</span>
+                <span>₪<span id="cart-total-price">0.00</span></span>
+            </div>
+            <button class="checkout-btn" onclick="sendWhatsAppOrder()">שלח הזמנה בוואטסאפ</button>
+        </div>
     </div>
-</div>
 
-<script>
-    // טעינת הלוגו מקובץ ההגדרות
-    document.getElementById('header-logo').src = logoUrl;
+    <script>
+        // הגדרות מערכת - יש לעדכן את השורות הבאות לפי הנדרש
+        const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSyZh_yrrm043MWU-p2JXfS8iPbBzAfJDBWmO7C-ADPHam5nRd9J728FiDyxKuMhwdf7mPEDVMvdSNR/pub?gid=0&single=true&output=csv';
+        const logoUrl = 'https://drive.google.com/thumbnail?id=1kyMX2_jqdaztDt-0eaXdG0rYNWyh6kxs&sz=w800';
+        const whatsappNumber = '972500000000'; // חשוב! שנה לטלפון של העסק (עם קידומת 972 וללא 0 בהתחלה)
 
-    let cart = [];
-    let allProducts = []; 
-    let currentCategory = 'הכל'; 
+        document.getElementById('header-logo').src = logoUrl;
+        
+        let cart = [];
+        let allProducts = [];
+        let currentCategory = 'הכל';
 
-    // משיכת הנתונים מגוגל בעזרת המשתנה מקובץ ההגדרות
-    function loadCatalog() {
-        Papa.parse(sheetCsvUrl, {
-            download: true,
-            header: true, 
-            dynamicTyping: true, 
-            complete: function(results) {
-                allProducts = results.data.filter(p => p['שם'] && p['שם'].trim() !== '');
-                renderCategories();
-                renderProducts();
-            },
-            error: function(err) {
-                console.error("שגיאה במשיכת הקובץ:", err);
-                if (document.getElementById('catalog-container').children.length === 0) {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('error-message').style.display = 'block';
+        function loadCatalog() {
+            Papa.parse(sheetCsvUrl, {
+                download: true,
+                header: true,
+                dynamicTyping: true,
+                complete: function (results) {
+                    allProducts = results.data.filter(p => p['שם'] && p['שם'].trim() !== '');
+                    renderCategories();
+                    renderProducts();
+                },
+                error: function(err) {
+                    console.error("שגיאה במשיכת הקובץ:", err);
+                    if (document.getElementById('catalog-container').children.length === 0) {
+                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('error-message').style.display = 'block';
+                    }
                 }
-            }
-        });
-    }
-
-    function renderCategories() {
-        const categoriesContainer = document.getElementById('categories-container');
-        categoriesContainer.innerHTML = '';
-
-        let categories = new Set();
-        allProducts.forEach(product => {
-            if (product['קטגוריה'] && product['קטגוריה'].trim() !== '') {
-                categories.add(product['קטגוריה'].trim());
-            }
-        });
-
-        if (categories.size === 0) return;
-
-        const allBtn = document.createElement('button');
-        allBtn.className = `category-btn ${currentCategory === 'הכל' ? 'active' : ''}`;
-        allBtn.innerText = 'כל המוצרים';
-        allBtn.onclick = () => setCategory('הכל');
-        categoriesContainer.appendChild(allBtn);
-
-        categories.forEach(cat => {
-            const btn = document.createElement('button');
-            btn.className = `category-btn ${currentCategory === cat ? 'active' : ''}`;
-            btn.innerText = cat;
-            btn.onclick = () => setCategory(cat);
-            categoriesContainer.appendChild(btn);
-        });
-    }
-
-    function setCategory(categoryName) {
-        currentCategory = categoryName;
-        renderCategories(); 
-        renderProducts();   
-    }
-
-    function renderProducts() {
-        const container = document.getElementById('catalog-container');
-        document.getElementById('loading').style.display = 'none'; 
-        container.innerHTML = '';
-
-        let productsToShow = allProducts;
-        if (currentCategory !== 'הכל') {
-            productsToShow = allProducts.filter(p => p['קטגוריה'] && p['קטגוריה'].trim() === currentCategory);
+            });
         }
 
-        if (productsToShow.length === 0) {
-            container.innerHTML = '<div style="text-align:center; grid-column: 1/-1;">אין כרגע מוצרים זמינים בקטגוריה זו.</div>';
-            return;
+        function renderCategories() {
+            const categoriesContainer = document.getElementById('categories-container');
+            categoriesContainer.innerHTML = '';
+            let categories = new Set();
+            
+            allProducts.forEach(product => {
+                if (product['קטגוריה'] && product['קטגוריה'].trim() !== '') {
+                    categories.add(product['קטגוריה'].trim());
+                }
+            });
+
+            if (categories.size === 0) return;
+
+            const allBtn = document.createElement('button');
+            allBtn.className = `category-btn ${currentCategory === 'הכל' ? 'active' : ''}`;
+            allBtn.innerText = 'כל המוצרים';
+            allBtn.onclick = () => setCategory('הכל');
+            categoriesContainer.appendChild(allBtn);
+
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `category-btn ${currentCategory === cat ? 'active' : ''}`;
+                btn.innerText = cat;
+                btn.onclick = () => setCategory(cat);
+                categoriesContainer.appendChild(btn);
+            });
         }
 
-        productsToShow.forEach(product => {
-            const title = product['שם'];
-            const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            
-            const description = product['תיאור'] || 'אין תיאור זמין.';
-            const dimensions = product['מידות'] ? `<br><b>מידות:</b> ${product['מידות']}` : '';
-            const price = typeof product['מחיר לצרכן'] === 'number' ? product['מחיר לצרכן'] : parseFloat(product['מחיר לצרכן']) || 0;
-            const stock = product['כמות'] || 0;
-            
-            const hasImage = product['תמונה'] && product['תמונה'].trim() !== '';
-            const imageUrl = hasImage ? product['תמונה'] : logoUrl;
-            const bgSize = hasImage ? 'cover' : 'contain';
-            const bgColor = hasImage ? '#eee' : '#ffffff';
+        function setCategory(categoryName) {
+            currentCategory = categoryName;
+            renderCategories();
+            renderProducts();
+        }
 
-            const cardHTML = `
-                <div class="product-card">
-                    <div class="product-image" style="background-image: url('${imageUrl}'); background-size: ${bgSize}; background-color: ${bgColor};"></div>
-                    <div class="product-details">
-                        <h2 class="product-title">${title}</h2>
-                        <p class="product-description">${description}${dimensions}</p>
-                        <div class="product-meta">
-                            <span class="product-price">₪${price.toFixed(2)}</span>
-                            <span class="product-stock ${stock <= 0 ? 'out-of-stock' : ''}">
-                                ${stock > 0 ? `מלאי: ${stock}` : 'אזל מהמלאי'}
-                            </span>
+        function renderProducts() {
+            const container = document.getElementById('catalog-container');
+            document.getElementById('loading').style.display = 'none';
+            container.innerHTML = '';
+            
+            let productsToShow = allProducts;
+            if (currentCategory !== 'הכל') {
+                productsToShow = allProducts.filter(p => p['קטגוריה'] && p['קטגוריה'].trim() === currentCategory);
+            }
+
+            if (productsToShow.length === 0) {
+                container.innerHTML = '<div style="text-align:center; grid-column: 1/-1;">אין כרגע מוצרים זמינים בקטגוריה זו.</div>';
+                return;
+            }
+
+            productsToShow.forEach(product => {
+                const title = product['שם'];
+                const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const description = product['תיאור'] || 'אין תיאור זמין.';
+                const dimensions = product['מידות'] ? `<br><b>מידות:</b> ${product['מידות']}` : '';
+                
+                const price = typeof product['מחיר לצרכן'] === 'number' ? product['מחיר לצרכן'] : parseFloat(product['מחיר לצרכן']) || 0;
+                const stock = parseInt(product['כמות']) || 0;
+                
+                // כאן מתבצע השינוי - יצירת הלינק מתוך ה-ID שבאקסל
+                const hasImage = product['תמונה'] && product['תמונה'].toString().trim() !== '';
+                const imageUrl = hasImage ? `https://drive.google.com/thumbnail?id=${product['תמונה'].toString().trim()}&sz=w800` : logoUrl;
+                
+                const bgSize = hasImage ? 'cover' : 'contain';
+                const bgColor = hasImage ? '#eee' : '#ffffff';
+
+                const cardHTML = `
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('${imageUrl}'); background-size: ${bgSize}; background-color: ${bgColor};"></div>
+                        <div class="product-details">
+                            <h2 class="product-title">${title}</h2>
+                            <p class="product-description">${description}${dimensions}</p>
+                            <div class="product-meta">
+                                <span class="product-price">₪${price.toFixed(2)}</span>
+                                <span class="product-stock ${stock <= 0 ? 'out-of-stock' : ''}">${stock <= 0 ? 'אזל מהמלאי' : `מלאי: ${stock}`}</span>
+                            </div>
+                            ${stock > 0 
+                                ? `<button class="add-to-cart-btn" onclick="addToCart('${safeTitle}', ${price})">הוסף לעגלה</button>` 
+                                : `<button class="add-to-cart-btn" disabled style="background-color: #95a5a6;">אזל מהמלאי</button>`}
                         </div>
-                        ${stock > 0 
-                            ? `<button class="add-to-cart-btn" onclick="addToCart('${safeTitle}', ${price})">הוסף לעגלה</button>` 
-                            : `<button class="add-to-cart-btn" disabled style="background-color: #95a5a6;">אזל מהמלאי</button>`
-                        }
                     </div>
-                </div>
-            `;
-            container.innerHTML += cardHTML;
-        });
-    }
-
-    function addToCart(title, price) {
-        const decodedTitle = title.replace(/&quot;/g, '"');
-        const existingItem = cart.find(item => item.title === decodedTitle);
-        
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({ title: decodedTitle, price: price, quantity: 1 });
-        }
-        
-        updateCartUI();
-        
-        const cartIcon = document.getElementById('cart-icon-container');
-        cartIcon.style.transform = 'scale(1.2)';
-        setTimeout(() => cartIcon.style.transform = 'scale(1)', 200);
-    }
-
-    function removeFromCart(index) {
-        cart.splice(index, 1);
-        updateCartUI();
-    }
-
-    function updateCartUI() {
-        const cartItemsContainer = document.getElementById('cart-items');
-        const cartCount = document.getElementById('cart-count');
-        const cartTotalPrice = document.getElementById('cart-total-price');
-        
-        cartItemsContainer.innerHTML = '';
-        let totalItems = 0;
-        let totalPrice = 0;
-
-        if (cart.length === 0) {
-            cartItemsContainer.innerHTML = '<p style="text-align:center; color:#888; margin-top:30px;">העגלה שלך ריקה כרגע.<br>בואו נוסיף קצת חיוכים! 🎈</p>';
+                `;
+                container.innerHTML += cardHTML;
+            });
         }
 
-        cart.forEach((item, index) => {
-            totalItems += item.quantity;
-            totalPrice += item.price * item.quantity;
-
-            cartItemsContainer.innerHTML += `
-                <div class="cart-item">
-                    <div class="cart-item-details">
-                        <div class="cart-item-title">${item.title}</div>
-                        <div class="cart-item-price">${item.quantity} יח' | ₪${(item.price * item.quantity).toFixed(2)}</div>
-                    </div>
-                    <button class="remove-item-btn" onclick="removeFromCart(${index})">הסר</button>
-                </div>
-            `;
-        });
-
-        cartCount.innerText = totalItems;
-        cartTotalPrice.innerText = `₪${totalPrice.toFixed(2)}`;
-    }
-
-    function toggleCart() {
-        const sidebar = document.getElementById('cart-sidebar');
-        const overlay = document.getElementById('cart-overlay');
-        
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
-    }
-
-    function sendWhatsAppOrder() {
-        if (cart.length === 0) {
-            alert('העגלה ריקה. אנא הוסף מוצרים לפני שליחת ההזמנה.');
-            return;
+        function addToCart(title, price) {
+            const decodedTitle = title.replace(/&quot;/g, '"');
+            const existingItem = cart.find(item => item.title === decodedTitle);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ title: decodedTitle, price: price, quantity: 1 });
+            }
+            
+            updateCartUI();
+            
+            const cartIcon = document.getElementById('cart-icon-container');
+            cartIcon.style.transform = 'scale(1.2)';
+            setTimeout(() => cartIcon.style.transform = 'scale(1)', 200);
         }
 
-        let message = "היי! הגעתי דרך האתר של 'חיוך על חוט', אשמח להזמין:\n\n";
-        let totalPrice = 0;
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
 
-        cart.forEach(item => {
-            message += `▪️ ${item.quantity}x ${item.title} (₪${(item.price * item.quantity).toFixed(2)})\n`;
-            totalPrice += item.price * item.quantity;
-        });
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotalPrice = document.getElementById('cart-total-price');
+            
+            cartItemsContainer.innerHTML = '';
+            let totalItems = 0;
+            let totalPrice = 0;
 
-        message += `\n*סך הכל לתשלום: ₪${totalPrice.toFixed(2)}*\n\nאשמח לפרטים על תשלום ואיסוף! 🎈`;
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="text-align:center; color: #888; margin-top:30px;">העגלה שלך ריקה כרגע.<br>בואו נוסיף קצת חיוכים!</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    totalItems += item.quantity;
+                    totalPrice += item.price * item.quantity;
+                    
+                    cartItemsContainer.innerHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-details">
+                                <div class="cart-item-title">${item.title}</div>
+                                <div class="cart-item-price">${item.quantity} יח' | ₪${(item.price * item.quantity).toFixed(2)}</div>
+                            </div>
+                            <button class="remove-item-btn" onclick="removeFromCart(${index})">הסר</button>
+                        </div>
+                    `;
+                });
+            }
 
-        const encodedMessage = encodeURIComponent(message);
-        
-        // שימוש במשתנה של הוואטסאפ מקובץ ההגדרות
-        window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
-    }
+            cartCount.innerText = totalItems;
+            cartTotalPrice.innerText = totalPrice.toFixed(2);
+        }
 
-    window.onload = function() {
-        loadCatalog();
-        updateCartUI();
-        setInterval(loadCatalog, 300000); 
-    };
-</script>
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+            document.getElementById('cart-overlay').classList.toggle('show');
+        }
 
+        function sendWhatsAppOrder() {
+            if (cart.length === 0) {
+                alert('העגלה ריקה. אנא הוסף מוצרים לפני שליחת ההזמנה.');
+                return;
+            }
+
+            let message = "היי! הגעתי דרך האתר של 'חיוך על חוט', אשמח להזמין:\n\n";
+            let totalPrice = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalPrice += itemTotal;
+                message += `${item.quantity} x ${item.title} (₪${itemTotal.toFixed(2)})\n`;
+            });
+
+            message += `\n*סך הכל לתשלום: ₪${totalPrice.toFixed(2)}*\n\nאשמח לפרטים על תשלום ואיסוף!`;
+            
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        window.onload = function() {
+            loadCatalog();
+            updateCartUI();
+            setInterval(loadCatalog, 300000); // מרענן קטלוג כל 5 דקות
+        };
+    </script>
 </body>
 </html>
