@@ -346,6 +346,40 @@
                 width: 300px;
             }
         }
+
+        /* פקדים חדשים לשינוי כמות בעגלה */
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            background: #f0f0f0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .qty-btn {
+            background: none;
+            border: none;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: var(--primary-color);
+            transition: background 0.2s;
+        }
+        .qty-btn:hover {
+            background: #e0e0e0;
+        }
+        .qty-display {
+            padding: 0 5px;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+            font-size: 1.1em;
+        }
     </style>
 </head>
 <body>
@@ -470,7 +504,7 @@
                 const price = typeof product['מחיר לצרכן'] === 'number' ? product['מחיר לצרכן'] : parseFloat(product['מחיר לצרכן']) || 0;
                 const stock = parseInt(product['כמות']) || 0;
                 
-                // כאן מתבצע השינוי - יצירת הלינק מתוך ה-ID שבאקסל
+                // משיכת התמונה לפי מזהה מתוך עמודת תמונה
                 const hasImage = product['תמונה'] && product['תמונה'].toString().trim() !== '';
                 const imageUrl = hasImage ? `https://drive.google.com/thumbnail?id=${product['תמונה'].toString().trim()}&sz=w800` : logoUrl;
                 
@@ -514,6 +548,17 @@
             setTimeout(() => cartIcon.style.transform = 'scale(1)', 200);
         }
 
+        function changeQuantity(index, delta) {
+            cart[index].quantity += delta;
+            
+            // אם הכמות יורדת ל-0, נסיר את המוצר לחלוטין מהעגלה
+            if (cart[index].quantity <= 0) {
+                removeFromCart(index);
+            } else {
+                updateCartUI();
+            }
+        }
+
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCartUI();
@@ -539,9 +584,16 @@
                         <div class="cart-item">
                             <div class="cart-item-details">
                                 <div class="cart-item-title">${item.title}</div>
-                                <div class="cart-item-price">${item.quantity} יח' | ₪${(item.price * item.quantity).toFixed(2)}</div>
+                                <div class="cart-item-price">₪${(item.price * item.quantity).toFixed(2)}</div>
                             </div>
-                            <button class="remove-item-btn" onclick="removeFromCart(${index})">הסר</button>
+                            <div class="cart-item-controls">
+                                <div class="qty-controls">
+                                    <button class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button>
+                                    <span class="qty-display">${item.quantity}</span>
+                                    <button class="qty-btn" onclick="changeQuantity(${index}, -1)">-</button>
+                                </div>
+                                <button class="remove-item-btn" onclick="removeFromCart(${index})">🗑️</button>
+                            </div>
                         </div>
                     `;
                 });
