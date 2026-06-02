@@ -6,6 +6,9 @@
     <title>חיוך על חוט - קטלוג בלונים</title>
     <link href="https://fonts.googleapis.com/css?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    
+    <script src="config.js"></script>
+    
     <style>
         :root {
             --primary-color: #ff6b6b;
@@ -137,6 +140,7 @@
             height: 250px;
             background-position: center;
             background-repeat: no-repeat;
+            transition: background-image 0.3s ease;
         }
         .product-details {
             padding: 20px;
@@ -155,6 +159,31 @@
             margin: 0 0 15px;
             line-height: 1.5;
             flex-grow: 1;
+        }
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .color-btn {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #555;
+        }
+        .color-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .color-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
         }
         .product-meta {
             display: flex;
@@ -255,20 +284,11 @@
         .cart-item-title {
             font-weight: bold;
             margin-bottom: 5px;
+            font-size: 0.95em;
         }
         .cart-item-price {
             color: var(--price-color);
             font-size: 0.9em;
-        }
-        .remove-item-btn {
-            background: #ffeaa7;
-            color: #d63031;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 10px;
         }
         .cart-footer {
             padding: 20px;
@@ -324,30 +344,6 @@
             color: #e74c3c;
             display: none;
         }
-        @media (max-width: 600px) {
-            #catalog-container {
-                padding: 20px;
-                gap: 20px;
-            }
-            #categories-container {
-                padding: 20px 20px 0;
-            }
-            header img {
-                height: 90px;
-            }
-            #cart-icon-container {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2em;
-                top: 15px;
-                left: 15px;
-            }
-            #cart-sidebar {
-                width: 300px;
-            }
-        }
-
-        /* פקדים חדשים לשינוי כמות בעגלה */
         .cart-item-controls {
             display: flex;
             align-items: center;
@@ -379,6 +375,23 @@
             min-width: 20px;
             text-align: center;
             font-size: 1.1em;
+        }
+        .remove-item-btn {
+            background: #ffeaa7;
+            color: #d63031;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        @media (max-width: 600px) {
+            #catalog-container { padding: 20px; gap: 20px; }
+            #categories-container { padding: 20px 20px 0; }
+            header img { height: 90px; }
+            #cart-icon-container { width: 40px; height: 40px; font-size: 1.2em; top: 15px; left: 15px; }
+            #cart-sidebar { width: 300px; }
         }
     </style>
 </head>
@@ -415,10 +428,7 @@
     </div>
 
     <script>
-        // הגדרות מערכת - יש לעדכן את השורות הבאות לפי הנדרש
-        const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSyZh_yrrm043MWU-p2JXfS8iPbBzAfJDBWmO7C-ADPHam5nRd9J728FiDyxKuMhwdf7mPEDVMvdSNR/pub?gid=0&single=true&output=csv';
-        const logoUrl = 'https://drive.google.com/thumbnail?id=1kyMX2_jqdaztDt-0eaXdG0rYNWyh6kxs&sz=w800';
-        const whatsappNumber = '972500000000'; // חשוב! שנה לטלפון של העסק (עם קידומת 972 וללא 0 בהתחלה)
+        // המשתנים sheetCsvUrl, logoUrl, whatsappNumber נמשכים כעת אוטומטית מקובץ ה-config.js
 
         document.getElementById('header-logo').src = logoUrl;
         
@@ -432,7 +442,40 @@
                 header: true,
                 dynamicTyping: true,
                 complete: function (results) {
-                    allProducts = results.data.filter(p => p['שם'] && p['שם'].trim() !== '');
+                    let productMap = new Map();
+
+                    results.data.forEach(p => {
+                        if (!p['שם'] || p['שם'].trim() === '') return;
+                        
+                        const name = p['שם'].trim();
+                        const color = p['צבע'] ? p['צבע'].trim() : '';
+                        const price = typeof p['מחיר לצרכן'] === 'number' ? p['מחיר לצרכן'] : parseFloat(p['מחיר לצרכן']) || 0;
+                        const stock = parseInt(p['כמות']) || 0;
+                        
+                        const imgId = p['תמונה'] ? p['תמונה'].toString().trim() : '';
+                        const imageUrl = imgId !== '' ? `https://drive.google.com/thumbnail?id=${imgId}&sz=w800` : logoUrl;
+
+                        if (!productMap.has(name)) {
+                            productMap.set(name, {
+                                name: name,
+                                safeTitle: name.replace(/'/g, "\\'").replace(/"/g, '"'),
+                                description: p['תיאור'] || 'אין תיאור זמין.',
+                                dimensions: p['מידות'] ? `<br><b>מידות:</b> ${p['מידות']}` : '',
+                                category: p['קטגוריה'] ? p['קטגוריה'].trim() : '',
+                                variants: []
+                            });
+                        }
+                        
+                        productMap.get(name).variants.push({
+                            color: color,
+                            price: price,
+                            stock: stock,
+                            imageUrl: imageUrl,
+                            hasImage: imgId !== ''
+                        });
+                    });
+
+                    allProducts = Array.from(productMap.values());
                     renderCategories();
                     renderProducts();
                 },
@@ -452,8 +495,8 @@
             let categories = new Set();
             
             allProducts.forEach(product => {
-                if (product['קטגוריה'] && product['קטגוריה'].trim() !== '') {
-                    categories.add(product['קטגוריה'].trim());
+                if (product.category !== '') {
+                    categories.add(product.category);
                 }
             });
 
@@ -487,7 +530,7 @@
             
             let productsToShow = allProducts;
             if (currentCategory !== 'הכל') {
-                productsToShow = allProducts.filter(p => p['קטגוריה'] && p['קטגוריה'].trim() === currentCategory);
+                productsToShow = allProducts.filter(p => p.category === currentCategory);
             }
 
             if (productsToShow.length === 0) {
@@ -495,35 +538,42 @@
                 return;
             }
 
-            productsToShow.forEach(product => {
-                const title = product['שם'];
-                const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                const description = product['תיאור'] || 'אין תיאור זמין.';
-                const dimensions = product['מידות'] ? `<br><b>מידות:</b> ${product['מידות']}` : '';
+            productsToShow.forEach((product, productIndex) => {
+                const defaultVariant = product.variants[0];
                 
-                const price = typeof product['מחיר לצרכן'] === 'number' ? product['מחיר לצרכן'] : parseFloat(product['מחיר לצרכן']) || 0;
-                const stock = parseInt(product['כמות']) || 0;
-                
-                // משיכת התמונה לפי מזהה מתוך עמודת תמונה
-                const hasImage = product['תמונה'] && product['תמונה'].toString().trim() !== '';
-                const imageUrl = hasImage ? `https://drive.google.com/thumbnail?id=${product['תמונה'].toString().trim()}&sz=w800` : logoUrl;
-                
-                const bgSize = hasImage ? 'cover' : 'contain';
-                const bgColor = hasImage ? '#eee' : '#ffffff';
+                const bgSize = defaultVariant.hasImage ? 'cover' : 'contain';
+                const bgColor = defaultVariant.hasImage ? '#eee' : '#ffffff';
+
+                let colorsHtml = '';
+                if (product.variants.length > 1 || (product.variants.length === 1 && product.variants[0].color !== '')) {
+                    colorsHtml = '<div class="color-options">';
+                    product.variants.forEach((v, vIndex) => {
+                        const activeClass = vIndex === 0 ? 'active' : '';
+                        const colorName = v.color || 'רגיל';
+                        colorsHtml += `<button class="color-btn ${activeClass}" id="btn-color-${productIndex}-${vIndex}" onclick="selectVariant(${productIndex}, ${vIndex})">${colorName}</button>`;
+                    });
+                    colorsHtml += '</div>';
+                }
 
                 const cardHTML = `
-                    <div class="product-card">
-                        <div class="product-image" style="background-image: url('${imageUrl}'); background-size: ${bgSize}; background-color: ${bgColor};"></div>
+                    <div class="product-card" id="card-${productIndex}">
+                        <div class="product-image" id="img-${productIndex}" style="background-image: url('${defaultVariant.imageUrl}'); background-size: ${bgSize}; background-color: ${bgColor};"></div>
                         <div class="product-details">
-                            <h2 class="product-title">${title}</h2>
-                            <p class="product-description">${description}${dimensions}</p>
+                            <h2 class="product-title">${product.name}</h2>
+                            <p class="product-description">${product.description}${product.dimensions}</p>
+                            
+                            ${colorsHtml}
+
                             <div class="product-meta">
-                                <span class="product-price">₪${price.toFixed(2)}</span>
-                                <span class="product-stock ${stock <= 0 ? 'out-of-stock' : ''}">${stock <= 0 ? 'אזל מהמלאי' : `מלאי: ${stock}`}</span>
+                                <span class="product-price" id="price-${productIndex}">₪${defaultVariant.price.toFixed(2)}</span>
+                                <span class="product-stock ${defaultVariant.stock <= 0 ? 'out-of-stock' : ''}" id="stock-${productIndex}">${defaultVariant.stock <= 0 ? 'אזל מהמלאי' : `מלאי: ${defaultVariant.stock}`}</span>
                             </div>
-                            ${stock > 0 
-                                ? `<button class="add-to-cart-btn" onclick="addToCart('${safeTitle}', ${price})">הוסף לעגלה</button>` 
-                                : `<button class="add-to-cart-btn" disabled style="background-color: #95a5a6;">אזל מהמלאי</button>`}
+                            
+                            <button id="add-btn-${productIndex}" class="add-to-cart-btn" 
+                                ${defaultVariant.stock <= 0 ? 'disabled style="background-color: #95a5a6;"' : ''} 
+                                onclick="addToCart('${product.safeTitle}', '${defaultVariant.color.replace(/'/g, "\\'")}', ${defaultVariant.price})">
+                                ${defaultVariant.stock <= 0 ? 'אזל מהמלאי' : 'הוסף לעגלה'}
+                            </button>
                         </div>
                     </div>
                 `;
@@ -531,14 +581,55 @@
             });
         }
 
-        function addToCart(title, price) {
-            const decodedTitle = title.replace(/&quot;/g, '"');
-            const existingItem = cart.find(item => item.title === decodedTitle);
+        function selectVariant(productIndex, variantIndex) {
+            const product = allProducts[productIndex];
+            const variant = product.variants[variantIndex];
+            
+            const colorButtons = document.querySelectorAll(`#card-${productIndex} .color-btn`);
+            colorButtons.forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-color-${productIndex}-${variantIndex}`).classList.add('active');
+
+            const imgEl = document.getElementById(`img-${productIndex}`);
+            imgEl.style.backgroundImage = `url('${variant.imageUrl}')`;
+            imgEl.style.backgroundSize = variant.hasImage ? 'cover' : 'contain';
+            imgEl.style.backgroundColor = variant.hasImage ? '#eee' : '#ffffff';
+
+            document.getElementById(`price-${productIndex}`).innerText = `₪${variant.price.toFixed(2)}`;
+            
+            const stockEl = document.getElementById(`stock-${productIndex}`);
+            if (variant.stock <= 0) {
+                stockEl.innerText = 'אזל מהמלאי';
+                stockEl.classList.add('out-of-stock');
+            } else {
+                stockEl.innerText = `מלאי: ${variant.stock}`;
+                stockEl.classList.remove('out-of-stock');
+            }
+
+            const addBtn = document.getElementById(`add-btn-${productIndex}`);
+            const safeColor = variant.color ? variant.color.replace(/'/g, "\\'") : '';
+            addBtn.setAttribute('onclick', `addToCart('${product.safeTitle}', '${safeColor}', ${variant.price})`);
+            
+            if (variant.stock <= 0) {
+                addBtn.innerText = 'אזל מהמלאי';
+                addBtn.disabled = true;
+                addBtn.style.backgroundColor = '#95a5a6';
+            } else {
+                addBtn.innerText = 'הוסף לעגלה';
+                addBtn.disabled = false;
+                addBtn.style.backgroundColor = 'var(--primary-color)';
+            }
+        }
+
+        function addToCart(title, color, price) {
+            const decodedTitle = title.replace(/"/g, '"');
+            const itemFullName = color ? `${decodedTitle} (${color})` : decodedTitle;
+            
+            const existingItem = cart.find(item => item.title === itemFullName);
             
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
-                cart.push({ title: decodedTitle, price: price, quantity: 1 });
+                cart.push({ title: itemFullName, price: price, quantity: 1 });
             }
             
             updateCartUI();
@@ -550,8 +641,6 @@
 
         function changeQuantity(index, delta) {
             cart[index].quantity += delta;
-            
-            // אם הכמות יורדת ל-0, נסיר את המוצר לחלוטין מהעגלה
             if (cart[index].quantity <= 0) {
                 removeFromCart(index);
             } else {
@@ -631,7 +720,7 @@
         window.onload = function() {
             loadCatalog();
             updateCartUI();
-            setInterval(loadCatalog, 300000); // מרענן קטלוג כל 5 דקות
+            setInterval(loadCatalog, 300000);
         };
     </script>
 </body>
