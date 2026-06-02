@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     
-    <script src="config.js"></script>
+    <script src="config.js" charset="UTF-8"></script>
     
     <style>
         :root {
@@ -386,6 +386,59 @@
             font-weight: bold;
             margin-right: 10px;
         }
+
+        /* עיצוב חלונית (Popup) טופס ההזמנה */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 3000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .close-modal-btn {
+            position: absolute;
+            top: 10px; left: 10px;
+            background: none; border: none;
+            font-size: 1.8em; cursor: pointer; color: #888;
+        }
+        .modal-content h3 {
+            margin-top: 0; color: var(--text-color);
+        }
+        .form-group {
+            margin-bottom: 15px; text-align: right;
+        }
+        .form-group label {
+            display: block; margin-bottom: 5px; font-weight: bold;
+        }
+        .form-group input {
+            width: 100%; padding: 10px; border: 1px solid #ccc;
+            border-radius: 8px; font-family: inherit; font-size: 1em;
+            box-sizing: border-box;
+        }
+        .submit-final-btn {
+            background-color: #25D366; color: white; border: none;
+            padding: 12px; border-radius: 8px; font-size: 1.1em;
+            font-weight: bold; font-family: inherit; cursor: pointer;
+            width: 100%; margin-top: 10px; transition: background 0.3s;
+        }
+        .submit-final-btn:hover {
+            background-color: #1ebe5d;
+        }
+
         @media (max-width: 600px) {
             #catalog-container { padding: 20px; gap: 20px; }
             #categories-container { padding: 20px 20px 0; }
@@ -423,14 +476,38 @@
                 <span>סך הכל:</span>
                 <span>₪<span id="cart-total-price">0.00</span></span>
             </div>
-            <button class="checkout-btn" onclick="sendWhatsAppOrder()">שלח הזמנה בוואטסאפ</button>
+            <button class="checkout-btn" onclick="openCheckoutModal()">המשך להזמנה</button>
+        </div>
+    </div>
+
+    <div id="checkout-modal-overlay" class="modal-overlay" onclick="closeCheckoutModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeCheckoutModal(event, true)">×</button>
+            <h3>השלמת הזמנה</h3>
+            <p style="color: #e74c3c; font-weight: bold; background: #ffeaea; padding: 10px; border-radius: 8px; font-size: 0.95em;">
+                📍 שים לב: אין משלוחים.<br>האיסוף מתבצע מקיבוץ חוקוק בלבד.
+            </p>
+            <div class="form-group">
+                <label for="customer-name">שם מלא:</label>
+                <input type="text" id="customer-name" placeholder="הכנס שם מלא" required>
+            </div>
+            <div class="form-group">
+                <label for="pickup-date">תאריך איסוף מבוקש:</label>
+                <input type="date" id="pickup-date" required>
+            </div>
+            <div class="form-group">
+                <label for="pickup-time">שעת איסוף משוערת:</label>
+                <input type="time" id="pickup-time" required>
+            </div>
+            <button class="submit-final-btn" onclick="processWhatsAppOrder()">שלח הזמנה לוואטסאפ 💬</button>
         </div>
     </div>
 
     <script>
-        // המשתנים sheetCsvUrl, logoUrl, whatsappNumber נמשכים כעת אוטומטית מקובץ ה-config.js
-
-        document.getElementById('header-logo').src = logoUrl;
+        // וידוא שהלוגו נמשך כראוי מקובץ ההגדרות
+        if (typeof logoUrl !== 'undefined') {
+            document.getElementById('header-logo').src = logoUrl;
+        }
         
         let cart = [];
         let allProducts = [];
@@ -453,25 +530,26 @@
                         const stock = parseInt(p['כמות']) || 0;
                         
                         const imgId = p['תמונה'] ? p['תמונה'].toString().trim() : '';
-                        const imageUrl = imgId !== '' ? `https://drive.google.com/thumbnail?id=${imgId}&sz=w800` : logoUrl;
+                        const imageUrl = imgId !== '' ? `https://drive.google.com/thumbnail?id=${imgId}&sz=w800` : (typeof logoUrl !== 'undefined' ? logoUrl : '');
 
                         if (!productMap.has(name)) {
                             productMap.set(name, {
                                 name: name,
                                 safeTitle: name.replace(/'/g, "\\'").replace(/"/g, '"'),
-                                description: p['תיאור'] || 'אין תיאור זמין.',
-                                dimensions: p['מידות'] ? `<br><b>מידות:</b> ${p['מידות']}` : '',
                                 category: p['קטגוריה'] ? p['קטגוריה'].trim() : '',
                                 variants: []
                             });
                         }
                         
+                        // שמירת כל הנתונים הרלוונטיים לכל צבע בנפרד
                         productMap.get(name).variants.push({
                             color: color,
                             price: price,
                             stock: stock,
                             imageUrl: imageUrl,
-                            hasImage: imgId !== ''
+                            hasImage: imgId !== '',
+                            description: p['תיאור'] || 'אין תיאור זמין.',
+                            dimensions: p['מידות'] ? `<br><b>מידות:</b> ${p['מידות']}` : ''
                         });
                     });
 
@@ -538,7 +616,8 @@
                 return;
             }
 
-            productsToShow.forEach((product, productIndex) => {
+            productsToShow.forEach((product) => {
+                const productIndex = allProducts.indexOf(product); // משיכת האינדקס הגלובלי הנכון
                 const defaultVariant = product.variants[0];
                 
                 const bgSize = defaultVariant.hasImage ? 'cover' : 'contain';
@@ -560,7 +639,7 @@
                         <div class="product-image" id="img-${productIndex}" style="background-image: url('${defaultVariant.imageUrl}'); background-size: ${bgSize}; background-color: ${bgColor};"></div>
                         <div class="product-details">
                             <h2 class="product-title">${product.name}</h2>
-                            <p class="product-description">${product.description}${product.dimensions}</p>
+                            <p class="product-description" id="desc-${productIndex}">${defaultVariant.description}${defaultVariant.dimensions}</p>
                             
                             ${colorsHtml}
 
@@ -594,6 +673,10 @@
             imgEl.style.backgroundSize = variant.hasImage ? 'cover' : 'contain';
             imgEl.style.backgroundColor = variant.hasImage ? '#eee' : '#ffffff';
 
+            // עדכון התיאור והמידות
+            document.getElementById(`desc-${productIndex}`).innerHTML = `${variant.description}${variant.dimensions}`;
+
+            // עדכון המחיר והמלאי
             document.getElementById(`price-${productIndex}`).innerText = `₪${variant.price.toFixed(2)}`;
             
             const stockEl = document.getElementById(`stock-${productIndex}`);
@@ -697,23 +780,48 @@
             document.getElementById('cart-overlay').classList.toggle('show');
         }
 
-        function sendWhatsAppOrder() {
+        function openCheckoutModal() {
             if (cart.length === 0) {
-                alert('העגלה ריקה. אנא הוסף מוצרים לפני שליחת ההזמנה.');
+                alert('העגלה ריקה. אנא הוסף מוצרים לפני המעבר להזמנה.');
+                return;
+            }
+            document.getElementById('checkout-modal-overlay').classList.add('show');
+        }
+
+        function closeCheckoutModal(event, force = false) {
+            if (force || event.target.id === 'checkout-modal-overlay') {
+                document.getElementById('checkout-modal-overlay').classList.remove('show');
+            }
+        }
+
+        function processWhatsAppOrder() {
+            const name = document.getElementById('customer-name').value.trim();
+            const date = document.getElementById('pickup-date').value;
+            const time = document.getElementById('pickup-time').value;
+
+            if (!name || !date || !time) {
+                alert('אנא מלא את כל הפרטים (שם, תאריך ושעה) כדי שנוכל להכין עבורך את ההזמנה.');
                 return;
             }
 
-            let message = "היי! הגעתי דרך האתר של 'חיוך על חוט', אשמח להזמין:\n\n";
-            let totalPrice = 0;
+            const dateParts = date.split('-');
+            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
+            let message = "היי! הגעתי דרך האתר של 'חיוך על חוט'.\n\n";
+            message += `*שם הלקוח:* ${name}\n`;
+            message += `*איסוף מקיבוץ חוקוק בתאריך:* ${formattedDate} בשעה ${time}\n\n`;
+            message += `*אשמח להזמין את הפריטים הבאים:*\n`;
+            
+            let totalPrice = 0;
             cart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 totalPrice += itemTotal;
                 message += `${item.quantity} x ${item.title} (₪${itemTotal.toFixed(2)})\n`;
             });
 
-            message += `\n*סך הכל לתשלום: ₪${totalPrice.toFixed(2)}*\n\nאשמח לפרטים על תשלום ואיסוף!`;
+            message += `\n*סך הכל לתשלום: ₪${totalPrice.toFixed(2)}*\n\nאשמח לפרטים על תשלום!`;
             
+            closeCheckoutModal(null, true);
             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
