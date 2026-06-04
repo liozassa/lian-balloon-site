@@ -28,7 +28,7 @@
         }
         header {
             background-color: #fff;
-            padding: 20px;
+            padding: 15px 20px;
             text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
@@ -41,7 +41,7 @@
         }
         header img {
             max-width: 100%;
-            height: 120px;
+            height: 100px; /* הקטנו מעט כדי לחסוך מקום לתפריט הנגלל */
             object-fit: contain;
             margin-bottom: 5px;
         }
@@ -85,15 +85,32 @@
             align-items: center;
             justify-content: center;
         }
+        
+        /* עיצוב חדש לקטגוריות כחלק מהתפריט העליון */
         #categories-container {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
+            justify-content: flex-start;
             gap: 10px;
-            padding: 20px 40px 0;
+            padding: 15px 5px 5px;
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
+            overflow-x: auto; /* מאפשר גלילה אופקית בנייד */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* מסתיר את פס הגלילה ב-Firefox */
         }
+        #categories-container::-webkit-scrollbar {
+            display: none; /* מסתיר את פס הגלילה ב-Chrome/Safari */
+        }
+        /* במחשב, נמרכז את הקטגוריות ונאפשר שבירת שורות */
+        @media (min-width: 768px) {
+            #categories-container {
+                justify-content: center;
+                flex-wrap: wrap;
+                overflow-x: visible;
+            }
+        }
+
         .category-btn {
             background-color: #fff;
             color: var(--primary-color);
@@ -105,6 +122,8 @@
             font-family: inherit;
             font-size: 1em;
             transition: all 0.3s ease;
+            white-space: nowrap; /* מונע שבירת שורות בתוך הכפתור */
+            flex-shrink: 0; /* מונע מהכפתורים להתכווץ */
         }
         .category-btn:hover {
             background-color: #ffeaea;
@@ -114,6 +133,7 @@
             color: #fff;
             box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
         }
+        
         #catalog-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -387,7 +407,6 @@
             margin-right: 10px;
         }
 
-        /* עיצוב חלונית (Popup) טופס ההזמנה */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -441,8 +460,7 @@
 
         @media (max-width: 600px) {
             #catalog-container { padding: 20px; gap: 20px; }
-            #categories-container { padding: 20px 20px 0; }
-            header img { height: 90px; }
+            header img { height: 75px; } /* לוגו קטן יותר בנייד כדי לתת מקום לקטגוריות */
             #cart-icon-container { width: 40px; height: 40px; font-size: 1.2em; top: 15px; left: 15px; }
             #cart-sidebar { width: 300px; }
         }
@@ -456,12 +474,12 @@
             🛒
             <div id="cart-count">0</div>
         </div>
+        <div id="categories-container"></div>
     </header>
 
     <div id="loading">טוען קטלוג מוצרים...</div>
     <div id="error-message">אופס! אירעה שגיאה בטעינת הנתונים. ודא שהקישור תקין.</div>
     
-    <div id="categories-container"></div>
     <div id="catalog-container"></div>
     
     <div id="cart-overlay" onclick="toggleCart()"></div>
@@ -504,7 +522,6 @@
     </div>
 
     <script>
-        // וידוא שהלוגו נמשך כראוי מקובץ ההגדרות
         if (typeof logoUrl !== 'undefined') {
             document.getElementById('header-logo').src = logoUrl;
         }
@@ -541,7 +558,6 @@
                             });
                         }
                         
-                        // שמירת כל הנתונים הרלוונטיים לכל צבע בנפרד
                         productMap.get(name).variants.push({
                             color: color,
                             price: price,
@@ -617,7 +633,7 @@
             }
 
             productsToShow.forEach((product) => {
-                const productIndex = allProducts.indexOf(product); // משיכת האינדקס הגלובלי הנכון
+                const productIndex = allProducts.indexOf(product);
                 const defaultVariant = product.variants[0];
                 
                 const bgSize = defaultVariant.hasImage ? 'cover' : 'contain';
@@ -673,10 +689,8 @@
             imgEl.style.backgroundSize = variant.hasImage ? 'cover' : 'contain';
             imgEl.style.backgroundColor = variant.hasImage ? '#eee' : '#ffffff';
 
-            // עדכון התיאור והמידות
             document.getElementById(`desc-${productIndex}`).innerHTML = `${variant.description}${variant.dimensions}`;
 
-            // עדכון המחיר והמלאי
             document.getElementById(`price-${productIndex}`).innerText = `₪${variant.price.toFixed(2)}`;
             
             const stockEl = document.getElementById(`stock-${productIndex}`);
