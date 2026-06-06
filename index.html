@@ -539,10 +539,13 @@
                     let productMap = new Map();
 
                     results.data.forEach(p => {
-                        if (!p['שם'] || p['שם'].trim() === '') return;
+                        // המרה לטקסט לפני בדיקת השם
+                        if (!p['שם'] || p['שם'].toString().trim() === '') return;
                         
-                        const name = p['שם'].trim();
-                        const color = p['צבע'] ? p['צבע'].trim() : '';
+                        const name = p['שם'].toString().trim();
+                        // התיקון לשגיאה שקיבלת:
+                        const color = p['צבע'] ? p['צבע'].toString().trim() : '';
+                        
                         const price = typeof p['מחיר לצרכן'] === 'number' ? p['מחיר לצרכן'] : parseFloat(p['מחיר לצרכן']) || 0;
                         const stock = parseInt(p['כמות']) || 0;
                         
@@ -553,7 +556,8 @@
                             productMap.set(name, {
                                 name: name,
                                 safeTitle: name.replace(/'/g, "\\'").replace(/"/g, '"'),
-                                category: p['קטגוריה'] ? p['קטגוריה'].trim() : '',
+                                // הוספנו הגנה גם לקטגוריה
+                                category: p['קטגוריה'] ? p['קטגוריה'].toString().trim() : '',
                                 variants: []
                             });
                         }
@@ -564,8 +568,9 @@
                             stock: stock,
                             imageUrl: imageUrl,
                             hasImage: imgId !== '',
-                            description: p['תיאור'] || 'אין תיאור זמין.',
-                            dimensions: p['מידות'] ? `<br><b>מידות:</b> ${p['מידות']}` : ''
+                            // הגנה על תיאור ומידות למקרה שהם מספרים
+                            description: p['תיאור'] ? p['תיאור'].toString() : 'אין תיאור זמין.',
+                            dimensions: p['מידות'] ? `<br><b>מידות:</b> ${p['מידות'].toString()}` : ''
                         });
                     });
 
