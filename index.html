@@ -578,13 +578,10 @@
                     let productMap = new Map();
 
                     results.data.forEach(p => {
-                        // המרה לטקסט לפני בדיקת השם
                         if (!p['שם'] || p['שם'].toString().trim() === '') return;
                         
                         const name = p['שם'].toString().trim();
-                        // התיקון לשגיאה שקיבלת:
                         const color = p['צבע'] ? p['צבע'].toString().trim() : '';
-                        
                         const price = typeof p['מחיר לצרכן'] === 'number' ? p['מחיר לצרכן'] : parseFloat(p['מחיר לצרכן']) || 0;
                         const stock = parseInt(p['כמות']) || 0;
                         
@@ -595,7 +592,6 @@
                             productMap.set(name, {
                                 name: name,
                                 safeTitle: name.replace(/'/g, "\\'").replace(/"/g, '"'),
-                                // הוספנו הגנה גם לקטגוריה
                                 category: p['קטגוריה'] ? p['קטגוריה'].toString().trim() : '',
                                 variants: []
                             });
@@ -607,13 +603,24 @@
                             stock: stock,
                             imageUrl: imageUrl,
                             hasImage: imgId !== '',
-                            // הגנה על תיאור ומידות למקרה שהם מספרים
                             description: p['תיאור'] ? p['תיאור'].toString() : 'אין תיאור זמין.',
                             dimensions: p['מידות'] ? `<br><b>מידות:</b> ${p['מידות'].toString()}` : ''
                         });
                     });
 
                     allProducts = Array.from(productMap.values());
+
+                    // --- תוספת: טעינה מוקדמת (Preloading) של כל התמונות למניעת עיכוב ---
+                    allProducts.forEach(product => {
+                        product.variants.forEach(variant => {
+                            if (variant.hasImage) {
+                                const preloadedImg = new Image();
+                                preloadedImg.src = variant.imageUrl;
+                            }
+                        });
+                    });
+                    // -------------------------------------------------------------------
+
                     renderCategories();
                     renderProducts();
                 },
