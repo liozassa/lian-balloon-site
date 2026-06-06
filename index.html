@@ -41,7 +41,7 @@
         }
         header img {
             max-width: 100%;
-            height: 100px; /* הקטנו מעט כדי לחסוך מקום לתפריט הנגלל */
+            height: 100px;
             object-fit: contain;
             margin-bottom: 5px;
         }
@@ -86,7 +86,6 @@
             justify-content: center;
         }
         
-        /* עיצוב חדש לקטגוריות כחלק מהתפריט העליון */
         #categories-container {
             display: flex;
             justify-content: flex-start;
@@ -95,14 +94,13 @@
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            overflow-x: auto; /* מאפשר גלילה אופקית בנייד */
+            overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* מסתיר את פס הגלילה ב-Firefox */
+            scrollbar-width: none;
         }
         #categories-container::-webkit-scrollbar {
-            display: none; /* מסתיר את פס הגלילה ב-Chrome/Safari */
+            display: none;
         }
-        /* במחשב, נמרכז את הקטגוריות ונאפשר שבירת שורות */
         @media (min-width: 768px) {
             #categories-container {
                 justify-content: center;
@@ -122,8 +120,8 @@
             font-family: inherit;
             font-size: 1em;
             transition: all 0.3s ease;
-            white-space: nowrap; /* מונע שבירת שורות בתוך הכפתור */
-            flex-shrink: 0; /* מונע מהכפתורים להתכווץ */
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         .category-btn:hover {
             background-color: #ffeaea;
@@ -458,52 +456,48 @@
             background-color: #1ebe5d;
         }
 
-        @media (max-width: 600px) {
-            #catalog-container { padding: 20px; gap: 20px; }
-            header img { height: 75px; } /* לוגו קטן יותר בנייד כדי לתת מקום לקטגוריות */
-            #cart-icon-container { width: 40px; height: 40px; font-size: 1.2em; top: 15px; left: 15px; }
-            #cart-sidebar { width: 300px; }
+        /* עיצוב כפתור וואטסאפ צף */
+        #floating-whatsapp {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            cursor: pointer;
+            z-index: 2000;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        #floating-whatsapp:hover {
+            transform: translateY(-5px);
+            background-color: #1ebe5d;
         }
 
-        /* עיצוב כפתור וואטסאפ צף */
-#floating-whatsapp {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #25D366;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 30px;
-    font-size: 1.1em;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-    cursor: pointer;
-    z-index: 2000;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-#floating-whatsapp:hover {
-    transform: translateY(-5px);
-    background-color: #1ebe5d;
-}
-
-@media (max-width: 600px) {
-    #floating-whatsapp {
-        bottom: 15px;
-        right: 15px;
-        padding: 10px 15px;
-        font-size: 1em;
-    }
-}
+        @media (max-width: 600px) {
+            #catalog-container { padding: 20px; gap: 20px; }
+            header img { height: 75px; }
+            #cart-icon-container { width: 40px; height: 40px; font-size: 1.2em; top: 15px; left: 15px; }
+            #cart-sidebar { width: 300px; }
+            #floating-whatsapp {
+                bottom: 15px;
+                right: 15px;
+                padding: 10px 15px;
+                font-size: 1em;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <img id="header-logo" alt="לוגו חיוך על חוט">
-        <p>קטלוג הבלונים החגיגי של ליאן</p>
+        <p>קטלוג הבלונים החגיגי שלנו</p>
         <div id="cart-icon-container" onclick="toggleCart()">
             🛒
             <div id="cart-count">0</div>
@@ -556,11 +550,10 @@
     </div>
 
     <div id="floating-whatsapp" onclick="openWhatsAppSupport()">
-    💬 שאלה? התייעצו איתנו
-</div>
+        💬 שאלה? התייעצו איתנו
+    </div>
 
     <script>
-
         if (typeof logoUrl !== 'undefined') {
             document.getElementById('header-logo').src = logoUrl;
         }
@@ -610,7 +603,7 @@
 
                     allProducts = Array.from(productMap.values());
 
-                    // --- תוספת: טעינה מוקדמת (Preloading) של כל התמונות למניעת עיכוב ---
+                    // טעינה מוקדמת של התמונות למניעת עיכוב במעבר בין הצבעים
                     allProducts.forEach(product => {
                         product.variants.forEach(variant => {
                             if (variant.hasImage) {
@@ -619,7 +612,6 @@
                             }
                         });
                     });
-                    // -------------------------------------------------------------------
 
                     renderCategories();
                     renderProducts();
@@ -701,6 +693,7 @@
                     colorsHtml += '</div>';
                 }
 
+                // תווית המלאי כעת מוסתרת (display: none) כשיש מלאי, ומוצגת רק כשאזל המלאי
                 const cardHTML = `
                     <div class="product-card" id="card-${productIndex}">
                         <div class="product-image" id="img-${productIndex}" style="background-image: url('${defaultVariant.imageUrl}'); background-size: ${bgSize}; background-color: ${bgColor};"></div>
@@ -712,7 +705,7 @@
 
                             <div class="product-meta">
                                 <span class="product-price" id="price-${productIndex}">₪${defaultVariant.price.toFixed(2)}</span>
-                                <span class="product-stock ${defaultVariant.stock <= 0 ? 'out-of-stock' : ''}" id="stock-${productIndex}">${defaultVariant.stock <= 0 ? 'אזל מהמלאי' : `מלאי: ${defaultVariant.stock}`}</span>
+                                <span class="product-stock ${defaultVariant.stock <= 0 ? 'out-of-stock' : ''}" id="stock-${productIndex}" style="display: ${defaultVariant.stock <= 0 ? 'inline-block' : 'none'};">אזל מהמלאי</span>
                             </div>
                             
                             <button id="add-btn-${productIndex}" class="add-to-cart-btn" 
@@ -746,10 +739,11 @@
             
             const stockEl = document.getElementById(`stock-${productIndex}`);
             if (variant.stock <= 0) {
+                stockEl.style.display = 'inline-block';
                 stockEl.innerText = 'אזל מהמלאי';
                 stockEl.classList.add('out-of-stock');
             } else {
-                stockEl.innerText = `מלאי: ${variant.stock}`;
+                stockEl.style.display = 'none';
                 stockEl.classList.remove('out-of-stock');
             }
 
@@ -889,12 +883,12 @@
             closeCheckoutModal(null, true);
             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
-        
-        // פונקציה לפתיחת וואטסאפ לשאלות כלליות
-function openWhatsAppSupport() {
-    const supportMessage = "היי! הגעתי דרך האתר, יש לי שאלה לגבי...";
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(supportMessage)}`, '_blank');
-}
+
+        // פונקציה לפתיחת וואטסאפ לשאלות כלליות מהכפתור הצף
+        function openWhatsAppSupport() {
+            const supportMessage = "היי! הגעתי דרך האתר, יש לי שאלה לגבי...";
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(supportMessage)}`, '_blank');
+        }
 
         window.onload = function() {
             loadCatalog();
