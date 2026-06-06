@@ -555,7 +555,12 @@
         </div>
     </div>
 
+    <div id="floating-whatsapp" onclick="openWhatsAppSupport()">
+    💬 שאלה? התייעצו איתנו
+</div>
+
     <script>
+
         if (typeof logoUrl !== 'undefined') {
             document.getElementById('header-logo').src = logoUrl;
         }
@@ -877,6 +882,12 @@
             closeCheckoutModal(null, true);
             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
+        
+        // פונקציה לפתיחת וואטסאפ לשאלות כלליות
+function openWhatsAppSupport() {
+    const supportMessage = "היי! הגעתי דרך האתר, יש לי שאלה לגבי...";
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(supportMessage)}`, '_blank');
+}
 
         window.onload = function() {
             loadCatalog();
