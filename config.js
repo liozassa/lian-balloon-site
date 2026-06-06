@@ -7,4 +7,4 @@ const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSyZh_yrrm0
 const logoUrl = 'https://drive.google.com/thumbnail?id=1kyMX2_jqdaztDt-0eaXdG0rYNWyh6kxs&sz=w800';
 
 // 3. מספר הטלפון לוואטסאפ (קידומת 972, בלי אפס בהתחלה)
-const whatsappNumber = '972508114396';
+const whatsappNumber = '972508114394';

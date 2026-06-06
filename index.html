@@ -464,12 +464,46 @@
             #cart-icon-container { width: 40px; height: 40px; font-size: 1.2em; top: 15px; left: 15px; }
             #cart-sidebar { width: 300px; }
         }
+
+        /* עיצוב כפתור וואטסאפ צף */
+#floating-whatsapp {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25D366;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    cursor: pointer;
+    z-index: 2000;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+#floating-whatsapp:hover {
+    transform: translateY(-5px);
+    background-color: #1ebe5d;
+}
+
+@media (max-width: 600px) {
+    #floating-whatsapp {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 15px;
+        font-size: 1em;
+    }
+}
     </style>
 </head>
 <body>
     <header>
         <img id="header-logo" alt="לוגו חיוך על חוט">
-        <p>קטלוג הבלונים החגיגי שלנו</p>
+        <p>קטלוג הבלונים החגיגי של ליאן</p>
         <div id="cart-icon-container" onclick="toggleCart()">
             🛒
             <div id="cart-count">0</div>
