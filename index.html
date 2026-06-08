@@ -133,14 +133,15 @@
             box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
         }
 
-        /* עיצוב אזור הסיפור שלי */
+        /* עיצוב אזור הסיפור שלי - עודכן לרוחב מלא בהתאמה לקטלוג */
         .about-section {
             background-color: #fff;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            padding: 30px;
-            max-width: 800px;
-            margin: 30px auto 0px;
+            padding: 40px;
+            max-width: 1200px;
+            width: calc(100% - 80px);
+            margin: 40px auto 0px;
             text-align: center;
             border-top: 4px solid var(--primary-color);
             box-sizing: border-box;
@@ -160,7 +161,8 @@
         }
         @media (max-width: 600px) {
             .about-section {
-                margin: 20px 20px 0px;
+                width: calc(100% - 40px);
+                margin: 20px auto 0px;
                 padding: 20px;
             }
             .about-title { font-size: 1.4em; }
@@ -932,7 +934,6 @@
         }
 
         window.onload = function() {
-            // הזרקת טקסט הסיפור מהקובץ החיצוני
             if (typeof storyHTML !== 'undefined') {
                 const aboutSec = document.getElementById('about-section');
                 if(aboutSec) {
