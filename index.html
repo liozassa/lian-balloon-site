@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     
     <script src="config.js" charset="UTF-8"></script>
+    <script src="story.js" charset="UTF-8"></script>
     
     <style>
         :root {
@@ -130,6 +131,40 @@
             background-color: var(--primary-color);
             color: #fff;
             box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+        }
+
+        /* עיצוב אזור הסיפור שלי */
+        .about-section {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            max-width: 800px;
+            margin: 30px auto 0px;
+            text-align: center;
+            border-top: 4px solid var(--primary-color);
+            box-sizing: border-box;
+        }
+        .about-title {
+            font-size: 1.6em;
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .about-text {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.7;
+            margin: 0;
+        }
+        @media (max-width: 600px) {
+            .about-section {
+                margin: 20px 20px 0px;
+                padding: 20px;
+            }
+            .about-title { font-size: 1.4em; }
+            .about-text { font-size: 1em; }
         }
         
         #catalog-container {
@@ -508,6 +543,8 @@
     <div id="loading">טוען קטלוג מוצרים...</div>
     <div id="error-message">אופס! אירעה שגיאה בטעינת הנתונים. ודא שהקישור תקין.</div>
     
+    <div id="about-section" class="about-section"></div>
+    
     <div id="catalog-container"></div>
     
     <div id="cart-overlay" onclick="toggleCart()"></div>
@@ -603,7 +640,7 @@
 
                     allProducts = Array.from(productMap.values());
 
-                    // טעינה מוקדמת של התמונות למניעת עיכוב במעבר בין הצבעים
+                    // טעינה מוקדמת של התמונות
                     allProducts.forEach(product => {
                         product.variants.forEach(variant => {
                             if (variant.hasImage) {
@@ -665,6 +702,12 @@
             document.getElementById('loading').style.display = 'none';
             container.innerHTML = '';
             
+            const aboutSection = document.getElementById('about-section');
+            if (aboutSection) {
+                // מציג את התוכן רק אם סומן 'הכל' וגם קיים תוכן בקובץ התוכן
+                aboutSection.style.display = (currentCategory === 'הכל' && typeof storyHTML !== 'undefined') ? 'block' : 'none';
+            }
+            
             let productsToShow = allProducts;
             if (currentCategory !== 'הכל') {
                 productsToShow = allProducts.filter(p => p.category === currentCategory);
@@ -693,7 +736,6 @@
                     colorsHtml += '</div>';
                 }
 
-                // תווית המלאי כעת מוסתרת (display: none) כשיש מלאי, ומוצגת רק כשאזל המלאי
                 const cardHTML = `
                     <div class="product-card" id="card-${productIndex}">
                         <div class="product-image" id="img-${productIndex}" style="background-image: url('${defaultVariant.imageUrl}'); background-size: ${bgSize}; background-color: ${bgColor};"></div>
@@ -884,13 +926,20 @@
             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        // פונקציה לפתיחת וואטסאפ לשאלות כלליות מהכפתור הצף
         function openWhatsAppSupport() {
             const supportMessage = "היי! הגעתי דרך האתר, יש לי שאלה לגבי...";
             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(supportMessage)}`, '_blank');
         }
 
         window.onload = function() {
+            // הזרקת טקסט הסיפור מהקובץ החיצוני
+            if (typeof storyHTML !== 'undefined') {
+                const aboutSec = document.getElementById('about-section');
+                if(aboutSec) {
+                    aboutSec.innerHTML = storyHTML;
+                }
+            }
+
             loadCatalog();
             updateCartUI();
             setInterval(loadCatalog, 300000);
