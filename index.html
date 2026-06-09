@@ -291,7 +291,7 @@
             left: -400px;
             width: 350px;
             max-width: 100%;
-            height: 100vh;
+            height: 100%; /* התיקון כאן: 100% במקום 100vh */
             background: #fff;
             box-shadow: 2px 0 15px rgba(0,0,0,0.2);
             z-index: 2000;
@@ -527,6 +527,9 @@
                 right: 15px;
                 padding: 10px 15px;
                 font-size: 1em;
+            }/* תוספת מרווח ביטחון לכפתור ההזמנה בנייד */
+            .cart-footer {
+                padding-bottom: 30px; 
             }
         }
     </style>
