@@ -5,15 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>חיוך על חוט - קטלוג בלונים</title>
     
-    <!-- פותר את שגיאת ה-favicon.ico 404 -->
     <link rel="icon" href="data:,">
-    
     <link href="https://fonts.googleapis.com/css?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- חיבור לספרייה של Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- ייבוא קובצי ההגדרות והתוכן החיצוניים -->
     <script src="config.js" charset="UTF-8"></script>
     <script src="story.js" charset="UTF-8"></script>
     
@@ -60,7 +54,7 @@
         }
         #cart-icon-container {
             position: absolute;
-            left: 20px;
+            right: 20px;
             top: 20px;
             background: #fff;
             border: 2px solid var(--primary-color);
@@ -75,462 +69,130 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: transform 0.2s;
         }
-        #cart-icon-container:hover {
-            transform: scale(1.1);
-        }
+        #cart-icon-container:hover { transform: scale(1.1); }
         #cart-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 0.8em;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; top: -5px; right: -5px; background: var(--primary-color);
+            color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 0.8em; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
         }
         
+        #admin-auth-btn {
+            position: absolute; left: 20px; top: 20px; background: #fff; border: 1px solid #ccc;
+            border-radius: 20px; padding: 8px 12px; font-size: 0.9em; cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s; display: flex; align-items: center; gap: 5px; color: #555;
+        }
+        #admin-auth-btn:hover { background: #eee; }
+
         #categories-container {
-            display: flex;
-            justify-content: flex-start;
-            gap: 10px;
-            padding: 15px 5px 5px;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+            display: flex; justify-content: flex-start; gap: 10px; padding: 15px 5px 5px; width: 100%; max-width: 1200px; margin: 0 auto; overflow-x: auto; scrollbar-width: none;
         }
-        #categories-container::-webkit-scrollbar {
-            display: none;
-        }
-        @media (min-width: 768px) {
-            #categories-container {
-                justify-content: center;
-                flex-wrap: wrap;
-                overflow-x: visible;
-            }
-        }
+        #categories-container::-webkit-scrollbar { display: none; }
+        @media (min-width: 768px) { #categories-container { justify-content: center; flex-wrap: wrap; overflow-x: visible; } }
 
         .category-btn {
-            background-color: #fff;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 500;
-            font-family: inherit;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            flex-shrink: 0;
+            background-color: #fff; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; font-family: inherit; font-size: 1em; transition: all 0.3s ease; white-space: nowrap; flex-shrink: 0;
         }
-        .category-btn:hover {
-            background-color: #ffeaea;
-        }
-        .category-btn.active {
-            background-color: var(--primary-color);
-            color: #fff;
-            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
-        }
+        .category-btn:hover { background-color: #ffeaea; }
+        .category-btn.active { background-color: var(--primary-color); color: #fff; box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3); }
 
         .about-section {
-            background-color: #fff;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            padding: 40px;
-            max-width: 1200px;
-            width: calc(100% - 80px);
-            margin: 40px auto 0px;
-            text-align: center;
-            border-top: 4px solid var(--primary-color);
-            box-sizing: border-box;
+            background-color: #fff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 40px; max-width: 1200px; width: calc(100% - 80px); margin: 40px auto 0px; text-align: center; border-top: 4px solid var(--primary-color); box-sizing: border-box;
         }
-        .about-title {
-            font-size: 1.6em;
-            color: var(--text-color);
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-        .about-text {
-            font-size: 1.1em;
-            color: #555;
-            line-height: 1.7;
-            margin: 0;
-        }
+        .about-title { font-size: 1.6em; color: var(--text-color); margin-top: 0; margin-bottom: 15px; font-weight: 700; }
+        .about-text { font-size: 1.1em; color: #555; line-height: 1.7; margin: 0; }
         
+        /* כפתור הוספת מוצר (מוסתר כברירת מחדל) */
+        #admin-add-btn-container {
+            text-align: center; margin: 30px auto 0; display: none;
+        }
+        .admin-add-btn {
+            background-color: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 25px;
+            font-size: 1.2em; font-weight: bold; font-family: inherit; cursor: pointer; transition: background 0.3s;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        .admin-add-btn:hover { background-color: #2980b9; }
+
         #catalog-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            padding: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; padding: 40px; max-width: 1200px; margin: 0 auto;
         }
         .product-card {
-            background-color: #fff;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
+            background-color: #fff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column;
         }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .product-image {
-            width: 100%;
-            height: 250px;
-            background-position: center;
-            background-repeat: no-repeat;
-            transition: background-image 0.3s ease;
-        }
-        .product-details {
-            padding: 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .product-title {
-            font-size: 1.4em;
-            margin: 0 0 10px;
-            font-weight: 700;
-        }
-        .product-description {
-            font-size: 0.95em;
-            color: #666;
-            margin: 0 0 15px;
-            line-height: 1.5;
-            flex-grow: 1;
-        }
-        .color-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        .color-btn {
-            background: #fff;
-            border: 1px solid #ccc;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #555;
-        }
-        .color-btn:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-        .color-btn.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-        .product-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-            margin-bottom: 15px;
-        }
-        .product-price {
-            font-size: 1.5em;
-            color: var(--price-color);
-            font-weight: 700;
-        }
-        .product-stock {
-            font-size: 0.9em;
-            color: var(--stock-color);
-            background-color: #f0f0f0;
-            padding: 5px 10px;
-            border-radius: 20px;
-        }
-        .out-of-stock {
-            color: #e74c3c;
-            background-color: #fadbd8;
-        }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .product-image { width: 100%; height: 250px; background-position: center; background-repeat: no-repeat; transition: background-image 0.3s ease; }
+        .product-details { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .product-title { font-size: 1.4em; margin: 0 0 10px; font-weight: 700; }
+        .product-description { font-size: 0.95em; color: #666; margin: 0 0 15px; line-height: 1.5; flex-grow: 1; }
+        .color-options { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .color-btn { background: #fff; border: 1px solid #ccc; padding: 5px 10px; border-radius: 15px; font-size: 0.85em; cursor: pointer; transition: all 0.2s; color: #555; }
+        .color-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
+        .color-btn.active { background: var(--primary-color); border-color: var(--primary-color); color: white; }
+        .product-meta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 15px; }
+        .product-price { font-size: 1.5em; color: var(--price-color); font-weight: 700; }
+        .product-stock { font-size: 0.9em; color: var(--stock-color); background-color: #f0f0f0; padding: 5px 10px; border-radius: 20px; }
+        .out-of-stock { color: #e74c3c; background-color: #fadbd8; }
+        
         .add-to-cart-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: bold;
-            font-family: inherit;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
+            background-color: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1.1em; font-weight: bold; font-family: inherit; cursor: pointer; transition: background-color 0.3s; width: 100%;
         }
-        .add-to-cart-btn:hover {
-            background-color: var(--primary-hover);
-        }
-        .add-to-cart-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        #cart-sidebar {
-            position: fixed;
-            top: 0;
-            left: -400px;
-            width: 350px;
-            max-width: 100%;
-            height: 100%;
-            background: #fff;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.2);
-            z-index: 2000;
-            transition: left 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        #cart-sidebar.open {
-            left: 0;
-        }
-        .cart-header {
-            padding: 20px;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .cart-header h2 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-        .close-cart-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5em;
-            cursor: pointer;
-        }
-        .cart-items-container {
-            padding: 20px;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-        }
-        .cart-item-details {
-            flex-grow: 1;
-        }
-        .cart-item-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 0.95em;
-        }
-        .cart-item-price {
-            color: var(--price-color);
-            font-size: 0.9em;
-        }
-        .cart-footer {
-            padding: 20px;
-            border-top: 2px solid #eee;
-            background: #fdfdfd;
-        }
-        .cart-total {
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.4em;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .checkout-btn {
-            background-color: #25D366;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 1.2em;
-            font-weight: bold;
-            font-family: inherit;
-            cursor: pointer;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .checkout-btn:hover {
-            background-color: #1ebe5d;
-        }
-        #cart-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1500;
-            display: none;
-        }
-        #cart-overlay.show {
-            display: block;
-        }
-        #loading, #error-message {
-            text-align: center;
-            font-size: 1.2em;
-            margin-top: 50px;
-            color: var(--stock-color);
-        }
-        #error-message {
-            color: #e74c3c;
-            display: none;
-        }
-        .cart-item-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            background: #f0f0f0;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        .qty-btn {
-            background: none;
-            border: none;
-            padding: 5px 12px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1.2em;
-            color: var(--primary-color);
-            transition: background 0.2s;
-        }
-        .qty-btn:hover {
-            background: #e0e0e0;
-        }
-        .qty-display {
-            padding: 0 5px;
-            font-weight: bold;
-            min-width: 20px;
-            text-align: center;
-            font-size: 1.1em;
-        }
-        .remove-item-btn {
-            background: #ffeaa7;
-            color: #d63031;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 10px;
-        }
+        .add-to-cart-btn:hover { background-color: var(--primary-hover); }
+        .add-to-cart-btn:disabled { background-color: #ccc; cursor: not-allowed; }
 
+        .admin-controls { display: flex; gap: 10px; margin-top: 10px; }
+        .admin-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; font-family: inherit; font-weight: bold; cursor: pointer; font-size: 0.95em; transition: opacity 0.2s; }
+        .admin-btn:hover { opacity: 0.8; }
+        .btn-edit { background-color: #f39c12; color: white; }
+        .btn-delete { background-color: #e74c3c; color: white; }
+
+        #cart-sidebar {
+            position: fixed; top: 0; right: -400px; width: 350px; max-width: 100%; height: 100%; background: #fff; box-shadow: -2px 0 15px rgba(0,0,0,0.2); z-index: 2000; transition: right 0.3s ease; display: flex; flex-direction: column;
+        }
+        #cart-sidebar.open { right: 0; }
+        .cart-header { padding: 20px; background: var(--primary-color); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .cart-header h2 { margin: 0; font-size: 1.5em; }
+        .close-cart-btn { background: none; border: none; color: white; font-size: 1.5em; cursor: pointer; }
+        .cart-items-container { padding: 20px; flex-grow: 1; overflow-y: auto; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; }
+        .cart-item-details { flex-grow: 1; }
+        .cart-item-title { font-weight: bold; margin-bottom: 5px; font-size: 0.95em; }
+        .cart-item-price { color: var(--price-color); font-size: 0.9em; }
+        .cart-footer { padding: 20px; border-top: 2px solid #eee; background: #fdfdfd; }
+        .cart-total { display: flex; justify-content: space-between; font-size: 1.4em; font-weight: bold; margin-bottom: 15px; }
+        .checkout-btn { background-color: #25D366; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 1.2em; font-weight: bold; font-family: inherit; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 3000;
-            display: none;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
         }
-        .modal-overlay.show {
-            display: flex;
-        }
+        .modal-overlay.show { display: flex; }
         .modal-content {
-            background: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: #fff; padding: 30px; border-radius: 15px; width: 100%; max-width: 400px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto;
         }
-        .close-modal-btn {
-            position: absolute;
-            top: 10px; left: 10px;
-            background: none; border: none;
-            font-size: 1.8em; cursor: pointer; color: #888;
-        }
-        .modal-content h3 {
-            margin-top: 0; color: var(--text-color);
-        }
-        .form-group {
-            margin-bottom: 15px; text-align: right;
-        }
-        .form-group label {
-            display: block; margin-bottom: 5px; font-weight: bold;
-        }
-        .form-group input {
-            width: 100%; padding: 10px; border: 1px solid #ccc;
-            border-radius: 8px; font-family: inherit; font-size: 1em;
-            box-sizing: border-box;
+        .close-modal-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; font-size: 1.8em; cursor: pointer; color: #888; }
+        .modal-content h3 { margin-top: 0; color: var(--text-color); }
+        .form-group { margin-bottom: 15px; text-align: right; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: inherit; font-size: 1em; box-sizing: border-box;
         }
         .submit-final-btn {
-            background-color: #25D366; color: white; border: none;
-            padding: 12px; border-radius: 8px; font-size: 1.1em;
-            font-weight: bold; font-family: inherit; cursor: pointer;
-            width: 100%; margin-top: 10px; transition: background 0.3s;
+            background-color: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1.1em; font-weight: bold; font-family: inherit; cursor: pointer; width: 100%; margin-top: 10px;
         }
-        .submit-final-btn:hover {
-            background-color: #1ebe5d;
-        }
-
+        
         #floating-whatsapp {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #25D366;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-size: 1.1em;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            cursor: pointer;
-            z-index: 2000;
-            transition: transform 0.3s ease, background-color 0.3s ease;
+            position: fixed; bottom: 20px; left: 20px; background-color: #25D366; color: white; padding: 12px 20px; border-radius: 30px; font-size: 1.1em; font-weight: bold; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); cursor: pointer; z-index: 2000; transition: transform 0.3s ease;
         }
-        #floating-whatsapp:hover {
-            transform: translateY(-5px);
-            background-color: #1ebe5d;
-        }
+        #floating-whatsapp:hover { transform: translateY(-5px); }
+
+        #loading { text-align: center; font-size: 1.2em; margin-top: 50px; color: var(--stock-color); }
 
         @media (max-width: 600px) {
-            .about-section {
-                width: calc(100% - 40px);
-                margin: 20px auto 0px;
-                padding: 20px;
-            }
-            .about-title { font-size: 1.4em; }
-            .about-text { font-size: 1em; }
+            .about-section { width: calc(100% - 40px); margin: 20px auto 0px; padding: 20px; }
             #catalog-container { padding: 20px; gap: 20px; }
             header img { height: 75px; }
-            #cart-icon-container { width: 40px; height: 40px; font-size: 1.2em; top: 15px; left: 15px; }
-            #cart-sidebar { width: 300px; }
-            #floating-whatsapp {
-                bottom: 15px;
-                right: 15px;
-                padding: 10px 15px;
-                font-size: 1em;
-            }
+            #cart-sidebar { width: 300px; right: -300px; }
+            #floating-whatsapp { bottom: 15px; left: 15px; padding: 10px 15px; font-size: 1em; }
+            #admin-auth-btn { top: 15px; left: 15px; padding: 5px 8px; font-size: 0.8em; }
+            #cart-icon-container { top: 15px; right: 15px; width: 40px; height: 40px; font-size: 1.2em; }
             .cart-footer { padding-bottom: 30px; }
         }
     </style>
@@ -539,6 +201,9 @@
     <header>
         <img id="header-logo" alt="לוגו חיוך על חוט">
         <p>קטלוג הבלונים החגיגי שלנו</p>
+        
+        <div id="admin-auth-btn" onclick="toggleLoginModal()">🔒 מנהל</div>
+        
         <div id="cart-icon-container" onclick="toggleCart()">
             🛒
             <div id="cart-count">0</div>
@@ -547,14 +212,17 @@
     </header>
 
     <div id="loading">טוען נתונים מהשרת...</div>
-    <div id="error-message">אופס! לא הצלחנו להתחבר לטבלה. אנא ודא שההגדרות ב-config.js נכונות.</div>
     
-    <!-- אזור הסיפור שלי (התוכן נשאב מקובץ story.js) -->
     <div id="about-section" class="about-section"></div>
     
+    <!-- כפתור הוספת מוצר שיוצג רק למנהל -->
+    <div id="admin-add-btn-container">
+        <button class="admin-add-btn" onclick="openAddModal()">➕ הוסף בלון חדש</button>
+    </div>
+
     <div id="catalog-container"></div>
     
-    <div id="cart-overlay" onclick="toggleCart()"></div>
+    <div id="cart-overlay" class="modal-overlay" onclick="toggleCart()"></div>
     <div id="cart-sidebar">
         <div class="cart-header">
             <h2>העגלה שלי</h2>
@@ -570,52 +238,158 @@
         </div>
     </div>
 
-    <!-- חלונית טופס הזמנה -->
-    <div id="checkout-modal-overlay" class="modal-overlay" onclick="closeCheckoutModal(event)">
+    <!-- חלונית התחברות למנהל -->
+    <div id="login-modal" class="modal-overlay" onclick="closeModal('login-modal')">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="close-modal-btn" onclick="closeCheckoutModal(event, true)">×</button>
+            <button class="close-modal-btn" onclick="closeModal('login-modal')">×</button>
+            <h3>התחברות מנהל 🔒</h3>
+            <div class="form-group">
+                <label>אימייל:</label>
+                <input type="email" id="login-email" placeholder="admin@example.com">
+            </div>
+            <div class="form-group">
+                <label>סיסמה:</label>
+                <input type="password" id="login-password" placeholder="••••••••">
+            </div>
+            <button class="submit-final-btn" onclick="handleLogin()">התחבר</button>
+            <p id="login-error" style="color: red; display: none; margin-top: 10px; font-size: 0.9em;"></p>
+        </div>
+    </div>
+
+    <!-- חלונית הוספת/עריכת מוצר -->
+    <div id="edit-modal" class="modal-overlay" onclick="closeModal('edit-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeModal('edit-modal')">×</button>
+            <h3 id="modal-action-title">עריכת מוצר ✏️</h3>
+            <input type="hidden" id="edit-id">
+            
+            <div class="form-group">
+                <label>שם הבלון:</label>
+                <input type="text" id="edit-name" placeholder="למשל: זר יום הולדת">
+            </div>
+            <div class="form-group">
+                <label>צבע / וריאציה (לא חובה):</label>
+                <input type="text" id="edit-color" placeholder="למשל: ורוד עדין">
+            </div>
+            <div class="form-group">
+                <label>קטגוריה:</label>
+                <input type="text" id="edit-category" placeholder="למשל: ימי הולדת">
+            </div>
+            <div class="form-group">
+                <label>מחיר:</label>
+                <input type="number" id="edit-price" step="0.1" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label>כמות במלאי:</label>
+                <input type="number" id="edit-quantity" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label>מזהה תמונה בדרייב (או קישור):</label>
+                <input type="text" id="edit-image" dir="ltr" placeholder="1aBcDeFgHiJkL...">
+            </div>
+            <div class="form-group">
+                <label>תיאור (לא חובה):</label>
+                <textarea id="edit-description" rows="2" placeholder="תיאור קצר של הבלון..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>מידות (לא חובה):</label>
+                <input type="text" id="edit-dimensions" placeholder="למשל: 60x40 ס״מ">
+            </div>
+            <button class="submit-final-btn" id="save-product-btn" onclick="saveProduct()">שמור מוצר 💾</button>
+        </div>
+    </div>
+
+    <!-- חלונית טופס הזמנה -->
+    <div id="checkout-modal-overlay" class="modal-overlay" onclick="closeModal('checkout-modal-overlay')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeModal('checkout-modal-overlay')">×</button>
             <h3>השלמת הזמנה</h3>
             <p style="color: #e74c3c; font-weight: bold; background: #ffeaea; padding: 10px; border-radius: 8px; font-size: 0.95em;">
                 📍 שים לב: אין משלוחים.<br>האיסוף מתבצע מקיבוץ חוקוק בלבד.
             </p>
             <div class="form-group">
-                <label for="customer-name">שם מלא:</label>
+                <label>שם מלא:</label>
                 <input type="text" id="customer-name" placeholder="הכנס שם מלא" required>
             </div>
             <div class="form-group">
-                <label for="pickup-date">תאריך איסוף מבוקש:</label>
+                <label>תאריך איסוף מבוקש:</label>
                 <input type="date" id="pickup-date" required>
             </div>
             <div class="form-group">
-                <label for="pickup-time">שעת איסוף משוערת:</label>
+                <label>שעת איסוף משוערת:</label>
                 <input type="time" id="pickup-time" required>
             </div>
-            <button class="submit-final-btn" onclick="processWhatsAppOrder()">שלח הזמנה לוואטסאפ 💬</button>
+            <button class="submit-final-btn" style="background:#25D366" onclick="processWhatsAppOrder()">שלח הזמנה לוואטסאפ 💬</button>
         </div>
     </div>
 
-    <!-- כפתור וואטסאפ צף לשאלות -->
     <div id="floating-whatsapp" onclick="openWhatsAppSupport()">
         💬 שאלה? התייעצו איתנו
     </div>
 
     <script>
-        if (typeof logoUrl !== 'undefined') {
-            document.getElementById('header-logo').src = logoUrl;
-        }
+        if (typeof logoUrl !== 'undefined') { document.getElementById('header-logo').src = logoUrl; }
         
         let cart = [];
         let allProducts = [];
         let currentCategory = 'הכל';
+        let isAdmin = false; 
 
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+        async function checkAuthStatus() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            isAdmin = !!session;
+            updateAdminBtnUI();
+        }
+
+        function updateAdminBtnUI() {
+            const btn = document.getElementById('admin-auth-btn');
+            const addContainer = document.getElementById('admin-add-btn-container');
+            if(isAdmin) {
+                btn.innerHTML = '🔓 התנתק';
+                btn.onclick = handleLogout;
+                addContainer.style.display = 'block'; // הצגת כפתור ההוספה
+            } else {
+                btn.innerHTML = '🔒 מנהל';
+                btn.onclick = () => document.getElementById('login-modal').classList.add('show');
+                addContainer.style.display = 'none'; // הסתרת כפתור ההוספה
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorP = document.getElementById('login-error');
+            
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                errorP.innerText = 'שגיאה: פרטים שגויים.';
+                errorP.style.display = 'block';
+            } else {
+                isAdmin = true;
+                updateAdminBtnUI();
+                closeModal('login-modal');
+                document.getElementById('login-email').value = '';
+                document.getElementById('login-password').value = '';
+                errorP.style.display = 'none';
+                renderProducts(); 
+            }
+        }
+
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            isAdmin = false;
+            updateAdminBtnUI();
+            renderProducts(); 
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
         async function loadCatalog() {
             try {
-                const { data, error } = await supabaseClient
-                    .from('products')
-                    .select('*');
-
+                const { data, error } = await supabaseClient.from('products').select('*');
                 if (error) throw error;
 
                 let productMap = new Map();
@@ -626,19 +400,13 @@
                     const name = p.name.toString().trim();
                     const color = p.color ? p.color.toString().trim() : '';
                     const price = typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0;
-                    
-                    // --- השינוי הוא כאן: מושך את הכמות מתוך עמודת quantity במקום stock ---
                     const stock = parseInt(p.quantity) || 0; 
                     
                     const rawImage = p.image_url ? p.image_url.toString().trim() : '';
                     let imageUrl = typeof logoUrl !== 'undefined' ? logoUrl : '';
-                    
                     if (rawImage !== '') {
-                        if (rawImage.startsWith('http')) {
-                            imageUrl = rawImage; 
-                        } else {
-                            imageUrl = `https://drive.google.com/thumbnail?id=${rawImage}&sz=w800`; 
-                        }
+                        if (rawImage.startsWith('http')) imageUrl = rawImage; 
+                        else imageUrl = `https://drive.google.com/thumbnail?id=${rawImage}&sz=w800`; 
                     }
 
                     if (!productMap.has(name)) {
@@ -651,9 +419,15 @@
                     }
                     
                     productMap.get(name).variants.push({
+                        id: p.id,
+                        dbName: name,
+                        dbCategory: p.category ? p.category.toString().trim() : '',
+                        rawImage: rawImage,
+                        rawDescription: p.description ? p.description.toString() : '',
+                        rawDimensions: p.dimensions ? p.dimensions.toString() : '',
                         color: color,
                         price: price,
-                        stock: stock, // המשתנה הפנימי שלנו נשאר stock כדי לא לשבור את שאר הקוד
+                        stock: stock,
                         imageUrl: imageUrl,
                         hasImage: rawImage !== '',
                         description: p.description ? p.description.toString() : 'אין תיאור זמין.',
@@ -662,24 +436,13 @@
                 });
 
                 allProducts = Array.from(productMap.values());
-
-                allProducts.forEach(product => {
-                    product.variants.forEach(variant => {
-                        if (variant.hasImage) {
-                            const preloadedImg = new Image();
-                            preloadedImg.src = variant.imageUrl;
-                        }
-                    });
-                });
-
                 renderCategories();
                 renderProducts();
 
             } catch (err) {
-                console.error("שגיאה במשיכת הנתונים מ-Supabase:", err);
+                console.error(err);
                 if (document.getElementById('catalog-container').children.length === 0) {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('error-message').style.display = 'block';
+                    document.getElementById('loading').innerHTML = 'שגיאה בטעינת נתונים.';
                 }
             }
         }
@@ -688,13 +451,7 @@
             const categoriesContainer = document.getElementById('categories-container');
             categoriesContainer.innerHTML = '';
             let categories = new Set();
-            
-            allProducts.forEach(product => {
-                if (product.category !== '') {
-                    categories.add(product.category);
-                }
-            });
-
+            allProducts.forEach(product => { if (product.category !== '') categories.add(product.category); });
             if (categories.size === 0) return;
 
             const allBtn = document.createElement('button');
@@ -724,24 +481,19 @@
             container.innerHTML = '';
             
             const aboutSection = document.getElementById('about-section');
-            if (aboutSection) {
-                aboutSection.style.display = (currentCategory === 'הכל' && typeof storyHTML !== 'undefined') ? 'block' : 'none';
-            }
+            if (aboutSection) aboutSection.style.display = (currentCategory === 'הכל' && typeof storyHTML !== 'undefined') ? 'block' : 'none';
             
             let productsToShow = allProducts;
-            if (currentCategory !== 'הכל') {
-                productsToShow = allProducts.filter(p => p.category === currentCategory);
-            }
+            if (currentCategory !== 'הכל') productsToShow = allProducts.filter(p => p.category === currentCategory);
 
             if (productsToShow.length === 0) {
-                container.innerHTML = '<div style="text-align:center; grid-column: 1/-1;">אין כרגע מוצרים זמינים בקטגוריה זו.</div>';
+                container.innerHTML = '<div style="text-align:center; grid-column: 1/-1;">אין כרגע מוצרים זמינים.</div>';
                 return;
             }
 
             productsToShow.forEach((product) => {
                 const productIndex = allProducts.indexOf(product);
                 const defaultVariant = product.variants[0];
-                
                 const bgSize = defaultVariant.hasImage ? 'cover' : 'contain';
                 const bgColor = defaultVariant.hasImage ? '#eee' : '#ffffff';
 
@@ -750,13 +502,22 @@
                     colorsHtml = '<div class="color-options">';
                     product.variants.forEach((v, vIndex) => {
                         const activeClass = vIndex === 0 ? 'active' : '';
-                        const colorName = v.color || 'רגיל';
-                        colorsHtml += `<button class="color-btn ${activeClass}" id="btn-color-${productIndex}-${vIndex}" onclick="selectVariant(${productIndex}, ${vIndex})">${colorName}</button>`;
+                        colorsHtml += `<button class="color-btn ${activeClass}" id="btn-color-${productIndex}-${vIndex}" onclick="selectVariant(${productIndex}, ${vIndex})">${v.color || 'רגיל'}</button>`;
                     });
                     colorsHtml += '</div>';
                 }
 
-                const cardHTML = `
+                let adminHtml = '';
+                if (isAdmin && defaultVariant.id) {
+                    adminHtml = `
+                        <div class="admin-controls">
+                            <button id="edit-btn-${productIndex}" class="admin-btn btn-edit" onclick="openEditModal(${defaultVariant.id})">✏️ ערוך</button>
+                            <button id="delete-btn-${productIndex}" class="admin-btn btn-delete" onclick="deleteProduct(${defaultVariant.id})">🗑️ מחק</button>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML += `
                     <div class="product-card" id="card-${productIndex}">
                         <div class="product-image" id="img-${productIndex}" style="background-image: url('${defaultVariant.imageUrl}'); background-size: ${bgSize}; background-color: ${bgColor};"></div>
                         <div class="product-details">
@@ -775,10 +536,10 @@
                                 onclick="addToCart('${product.safeTitle}', '${defaultVariant.color.replace(/'/g, "\\'")}', ${defaultVariant.price})">
                                 ${defaultVariant.stock <= 0 ? 'אזל מהמלאי' : 'הוסף לעגלה'}
                             </button>
+                            ${adminHtml}
                         </div>
                     </div>
                 `;
-                container.innerHTML += cardHTML;
             });
         }
 
@@ -786,8 +547,7 @@
             const product = allProducts[productIndex];
             const variant = product.variants[variantIndex];
             
-            const colorButtons = document.querySelectorAll(`#card-${productIndex} .color-btn`);
-            colorButtons.forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll(`#card-${productIndex} .color-btn`).forEach(b => b.classList.remove('active'));
             document.getElementById(`btn-color-${productIndex}-${variantIndex}`).classList.add('active');
 
             const imgEl = document.getElementById(`img-${productIndex}`);
@@ -809,34 +569,116 @@
             }
 
             const addBtn = document.getElementById(`add-btn-${productIndex}`);
-            const safeColor = variant.color ? variant.color.replace(/'/g, "\\'") : '';
-            addBtn.setAttribute('onclick', `addToCart('${product.safeTitle}', '${safeColor}', ${variant.price})`);
+            addBtn.setAttribute('onclick', `addToCart('${product.safeTitle}', '${variant.color.replace(/'/g, "\\'")}', ${variant.price})`);
             
-            if (variant.stock <= 0) {
-                addBtn.innerText = 'אזל מהמלאי';
-                addBtn.disabled = true;
-                addBtn.style.backgroundColor = '#95a5a6';
-            } else {
-                addBtn.innerText = 'הוסף לעגלה';
-                addBtn.disabled = false;
-                addBtn.style.backgroundColor = 'var(--primary-color)';
+            if (variant.stock <= 0) { addBtn.innerText = 'אזל מהמלאי'; addBtn.disabled = true; addBtn.style.backgroundColor = '#95a5a6'; } 
+            else { addBtn.innerText = 'הוסף לעגלה'; addBtn.disabled = false; addBtn.style.backgroundColor = 'var(--primary-color)'; }
+
+            if (isAdmin && variant.id) {
+                document.getElementById(`edit-btn-${productIndex}`).setAttribute('onclick', `openEditModal(${variant.id})`);
+                document.getElementById(`delete-btn-${productIndex}`).setAttribute('onclick', `deleteProduct(${variant.id})`);
             }
         }
+
+        // --- פונקציות ניהול: הוספה, עריכה ומחיקה --- //
+
+        async function deleteProduct(id) {
+            if (!confirm('האם את/ה בטוח/ה שברצונך למחוק מוצר זה לצמיתות?')) return;
+            const { error } = await supabaseClient.from('products').delete().eq('id', id);
+            if (error) alert('שגיאה במחיקה: ' + error.message);
+            else loadCatalog();
+        }
+
+        // פתיחת חלונית להוספת מוצר חדש (מנקה שדות)
+        function openAddModal() {
+            document.getElementById('modal-action-title').innerHTML = 'הוספת מוצר חדש 🎈';
+            document.getElementById('save-product-btn').innerHTML = 'הוסף מוצר 🚀';
+            
+            document.getElementById('edit-id').value = '';
+            document.getElementById('edit-name').value = '';
+            document.getElementById('edit-color').value = '';
+            document.getElementById('edit-category').value = '';
+            document.getElementById('edit-price').value = '';
+            document.getElementById('edit-quantity').value = '';
+            document.getElementById('edit-image').value = '';
+            document.getElementById('edit-description').value = '';
+            document.getElementById('edit-dimensions').value = '';
+            
+            document.getElementById('edit-modal').classList.add('show');
+        }
+
+        // פתיחת חלונית לעריכת מוצר קיים (שואב נתונים)
+        function openEditModal(id) {
+            document.getElementById('modal-action-title').innerHTML = 'עריכת מוצר ✏️';
+            document.getElementById('save-product-btn').innerHTML = 'שמור שינויים 💾';
+
+            let targetVar = null;
+            allProducts.forEach(p => p.variants.forEach(v => { if(v.id == id) targetVar = v; }));
+            if (!targetVar) return;
+
+            document.getElementById('edit-id').value = targetVar.id;
+            document.getElementById('edit-name').value = targetVar.dbName;
+            document.getElementById('edit-color').value = targetVar.color;
+            document.getElementById('edit-category').value = targetVar.dbCategory;
+            document.getElementById('edit-price').value = targetVar.price;
+            document.getElementById('edit-quantity').value = targetVar.stock;
+            document.getElementById('edit-image').value = targetVar.rawImage;
+            document.getElementById('edit-description').value = targetVar.rawDescription;
+            document.getElementById('edit-dimensions').value = targetVar.rawDimensions;
+            
+            document.getElementById('edit-modal').classList.add('show');
+        }
+
+        // שמירת הנתונים (יודע לזהות אם זו הוספה חדשה או עריכה)
+        async function saveProduct() {
+            const id = document.getElementById('edit-id').value;
+            const name = document.getElementById('edit-name').value.trim();
+            
+            if (!name) {
+                alert('חובה להזין לפחות שם מוצר!');
+                return;
+            }
+
+            const productData = {
+                name: name,
+                color: document.getElementById('edit-color').value.trim(),
+                category: document.getElementById('edit-category').value.trim(),
+                price: parseFloat(document.getElementById('edit-price').value) || 0,
+                quantity: parseInt(document.getElementById('edit-quantity').value) || 0,
+                image_url: document.getElementById('edit-image').value.trim(),
+                description: document.getElementById('edit-description').value.trim(),
+                dimensions: document.getElementById('edit-dimensions').value.trim()
+            };
+
+            let error;
+            if (id === '') {
+                // הוספת מוצר חדש (INSERT)
+                const res = await supabaseClient.from('products').insert([productData]);
+                error = res.error;
+            } else {
+                // עדכון מוצר קיים (UPDATE)
+                const res = await supabaseClient.from('products').update(productData).eq('id', id);
+                error = res.error;
+            }
+
+            if (error) {
+                alert('שגיאה בשמירה: ' + error.message);
+            } else {
+                closeModal('edit-modal');
+                loadCatalog(); // רענון לאחר העדכון או ההוספה
+            }
+        }
+        // ------------------------------------ //
 
         function addToCart(title, color, price) {
             const decodedTitle = title.replace(/"/g, '"');
             const itemFullName = color ? `${decodedTitle} (${color})` : decodedTitle;
-            
             const existingItem = cart.find(item => item.title === itemFullName);
             
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ title: itemFullName, price: price, quantity: 1 });
-            }
+            if (existingItem) existingItem.quantity += 1;
+            else cart.push({ title: itemFullName, price: price, quantity: 1 });
             
             updateCartUI();
-            
             const cartIcon = document.getElementById('cart-icon-container');
             cartIcon.style.transform = 'scale(1.2)';
             setTimeout(() => cartIcon.style.transform = 'scale(1)', 200);
@@ -844,11 +686,8 @@
 
         function changeQuantity(index, delta) {
             cart[index].quantity += delta;
-            if (cart[index].quantity <= 0) {
-                removeFromCart(index);
-            } else {
-                updateCartUI();
-            }
+            if (cart[index].quantity <= 0) cart.splice(index, 1);
+            updateCartUI();
         }
 
         function removeFromCart(index) {
@@ -858,20 +697,15 @@
 
         function updateCartUI() {
             const cartItemsContainer = document.getElementById('cart-items');
-            const cartCount = document.getElementById('cart-count');
-            const cartTotalPrice = document.getElementById('cart-total-price');
-            
             cartItemsContainer.innerHTML = '';
-            let totalItems = 0;
-            let totalPrice = 0;
+            let totalItems = 0, totalPrice = 0;
 
             if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p style="text-align:center; color: #888; margin-top:30px;">העגלה שלך ריקה כרגע.<br>בואו נוסיף קצת חיוכים!</p>';
+                cartItemsContainer.innerHTML = '<p style="text-align:center; color: #888; margin-top:30px;">העגלה ריקה.<br>בואו נוסיף חיוכים!</p>';
             } else {
                 cart.forEach((item, index) => {
                     totalItems += item.quantity;
                     totalPrice += item.price * item.quantity;
-                    
                     cartItemsContainer.innerHTML += `
                         <div class="cart-item">
                             <div class="cart-item-details">
@@ -886,13 +720,11 @@
                                 </div>
                                 <button class="remove-item-btn" onclick="removeFromCart(${index})">🗑️</button>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
             }
-
-            cartCount.innerText = totalItems;
-            cartTotalPrice.innerText = totalPrice.toFixed(2);
+            document.getElementById('cart-count').innerText = totalItems;
+            document.getElementById('cart-total-price').innerText = totalPrice.toFixed(2);
         }
 
         function toggleCart() {
@@ -901,17 +733,8 @@
         }
 
         function openCheckoutModal() {
-            if (cart.length === 0) {
-                alert('העגלה ריקה. אנא הוסף מוצרים לפני המעבר להזמנה.');
-                return;
-            }
+            if (cart.length === 0) { alert('העגלה ריקה.'); return; }
             document.getElementById('checkout-modal-overlay').classList.add('show');
-        }
-
-        function closeCheckoutModal(event, force = false) {
-            if (force || event.target.id === 'checkout-modal-overlay') {
-                document.getElementById('checkout-modal-overlay').classList.remove('show');
-            }
         }
 
         function processWhatsAppOrder() {
@@ -919,48 +742,38 @@
             const date = document.getElementById('pickup-date').value;
             const time = document.getElementById('pickup-time').value;
 
-            if (!name || !date || !time) {
-                alert('אנא מלא את כל הפרטים (שם, תאריך ושעה) כדי שנוכל להכין עבורך את ההזמנה.');
-                return;
-            }
+            if (!name || !date || !time) { alert('אנא מלא את כל הפרטים.'); return; }
 
             const dateParts = date.split('-');
             const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
             let message = "היי! הגעתי דרך האתר של 'חיוך על חוט'.\n\n";
-            message += `*שם הלקוח:* ${name}\n`;
-            message += `*איסוף מקיבוץ חוקוק בתאריך:* ${formattedDate} בשעה ${time}\n\n`;
-            message += `*אשמח להזמין את הפריטים הבאים:*\n`;
+            message += `*שם:* ${name}\n*איסוף מחוקוק ב:* ${formattedDate} בשעה ${time}\n\n*הזמנה:*\n`;
             
             let totalPrice = 0;
             cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                totalPrice += itemTotal;
-                message += `${item.quantity} x ${item.title} (₪${itemTotal.toFixed(2)})\n`;
+                totalPrice += item.price * item.quantity;
+                message += `${item.quantity} x ${item.title}\n`;
             });
 
-            message += `\n*סך הכל לתשלום: ₪${totalPrice.toFixed(2)}*\n\nאשמח לפרטים על תשלום!`;
+            message += `\n*סה"כ: ₪${totalPrice.toFixed(2)}*`;
             
-            closeCheckoutModal(null, true);
+            closeModal('checkout-modal-overlay');
             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
         function openWhatsAppSupport() {
-            const supportMessage = "היי! הגעתי דרך האתר, יש לי שאלה לגבי...";
-            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(supportMessage)}`, '_blank');
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("היי! הגעתי מהאתר, יש לי שאלה לגבי...")}`, '_blank');
         }
 
         window.onload = function() {
             if (typeof storyHTML !== 'undefined') {
                 const aboutSec = document.getElementById('about-section');
-                if(aboutSec) {
-                    aboutSec.innerHTML = storyHTML;
-                }
+                if(aboutSec) aboutSec.innerHTML = storyHTML;
             }
-
+            checkAuthStatus();
             loadCatalog();
             updateCartUI();
-            setInterval(loadCatalog, 300000); 
         };
     </script>
 </body>
