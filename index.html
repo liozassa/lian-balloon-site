@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>חיוך על חוט - קטלוג בלונים</title>
+    <!-- השורה הזו תעלים את שגיאת ה-favicon.ico -->
+    <link rel="icon" href="data:,">
+    
     <link href="https://fonts.googleapis.com/css?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script> -->
     <!-- למחוק את השורה של PapaParse ולהדביק את זו: -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -607,12 +610,12 @@
         let currentCategory = 'הכל';
 
         // חיבור ל-Supabase
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         async function loadCatalog() {
             try {
                 // משיכת כל הנתונים מטבלת products
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('products')
                     .select('*');
 
