@@ -6,6 +6,8 @@
     <title>חיוך על חוט - קטלוג בלונים</title>
     <link href="https://fonts.googleapis.com/css?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <!-- למחוק את השורה של PapaParse ולהדביק את זו: -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script src="config.js" charset="UTF-8"></script>
     <script src="story.js" charset="UTF-8"></script>
@@ -604,68 +606,77 @@
         let allProducts = [];
         let currentCategory = 'הכל';
 
-        function loadCatalog() {
-            Papa.parse(sheetCsvUrl, {
-                download: true,
-                header: true,
-                dynamicTyping: true,
-                complete: function (results) {
-                    let productMap = new Map();
+        // חיבור ל-Supabase
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-                    results.data.forEach(p => {
-                        if (!p['שם'] || p['שם'].toString().trim() === '') return;
-                        
-                        const name = p['שם'].toString().trim();
-                        const color = p['צבע'] ? p['צבע'].toString().trim() : '';
-                        const price = typeof p['מחיר לצרכן'] === 'number' ? p['מחיר לצרכן'] : parseFloat(p['מחיר לצרכן']) || 0;
-                        const stock = parseInt(p['כמות']) || 0;
-                        
-                        const imgId = p['תמונה'] ? p['תמונה'].toString().trim() : '';
-                        const imageUrl = imgId !== '' ? `https://drive.google.com/thumbnail?id=${imgId}&sz=w800` : (typeof logoUrl !== 'undefined' ? logoUrl : '');
+        async function loadCatalog() {
+            try {
+                // משיכת כל הנתונים מטבלת products
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*');
 
-                        if (!productMap.has(name)) {
-                            productMap.set(name, {
-                                name: name,
-                                safeTitle: name.replace(/'/g, "\\'").replace(/"/g, '"'),
-                                category: p['קטגוריה'] ? p['קטגוריה'].toString().trim() : '',
-                                variants: []
-                            });
-                        }
-                        
-                        productMap.get(name).variants.push({
-                            color: color,
-                            price: price,
-                            stock: stock,
-                            imageUrl: imageUrl,
-                            hasImage: imgId !== '',
-                            description: p['תיאור'] ? p['תיאור'].toString() : 'אין תיאור זמין.',
-                            dimensions: p['מידות'] ? `<br><b>מידות:</b> ${p['מידות'].toString()}` : ''
-                        });
-                    });
-
-                    allProducts = Array.from(productMap.values());
-
-                    // טעינה מוקדמת של התמונות
-                    allProducts.forEach(product => {
-                        product.variants.forEach(variant => {
-                            if (variant.hasImage) {
-                                const preloadedImg = new Image();
-                                preloadedImg.src = variant.imageUrl;
-                            }
-                        });
-                    });
-
-                    renderCategories();
-                    renderProducts();
-                },
-                error: function(err) {
-                    console.error("שגיאה במשיכת הקובץ:", err);
-                    if (document.getElementById('catalog-container').children.length === 0) {
-                        document.getElementById('loading').style.display = 'none';
-                        document.getElementById('error-message').style.display = 'block';
-                    }
+                if (error) {
+                    throw error;
                 }
-            });
+
+                let productMap = new Map();
+
+                // עוברים על התוצאות מ-Supabase במקום מהאקסל
+                data.forEach(p => {
+                    // בדיקה שיש שם למוצר (כעת משתמשים בשמות עמודות באנגלית)
+                    if (!p.name || p.name.toString().trim() === '') return;
+                    
+                    const name = p.name.toString().trim();
+                    const color = p.color ? p.color.toString().trim() : '';
+                    const price = typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0;
+                    const stock = parseInt(p.stock) || 0;
+                    
+                    const imgId = p.image_id ? p.image_id.toString().trim() : '';
+                    const imageUrl = imgId !== '' ? `https://drive.google.com/thumbnail?id=${imgId}&sz=w800` : (typeof logoUrl !== 'undefined' ? logoUrl : '');
+
+                    if (!productMap.has(name)) {
+                        productMap.set(name, {
+                            name: name,
+                            safeTitle: name.replace(/'/g, "\\'").replace(/"/g, '"'),
+                            category: p.category ? p.category.toString().trim() : '',
+                            variants: []
+                        });
+                    }
+                    
+                    productMap.get(name).variants.push({
+                        color: color,
+                        price: price,
+                        stock: stock,
+                        imageUrl: imageUrl,
+                        hasImage: imgId !== '',
+                        description: p.description ? p.description.toString() : 'אין תיאור זמין.',
+                        dimensions: p.dimensions ? `<br><b>מידות:</b> ${p.dimensions.toString()}` : ''
+                    });
+                });
+
+                allProducts = Array.from(productMap.values());
+
+                // טעינה מוקדמת של התמונות למניעת עיכוב במעבר בין הצבעים
+                allProducts.forEach(product => {
+                    product.variants.forEach(variant => {
+                        if (variant.hasImage) {
+                            const preloadedImg = new Image();
+                            preloadedImg.src = variant.imageUrl;
+                        }
+                    });
+                });
+
+                renderCategories();
+                renderProducts();
+
+            } catch (err) {
+                console.error("שגיאה במשיכת הנתונים מ-Supabase:", err);
+                if (document.getElementById('catalog-container').children.length === 0) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error-message').style.display = 'block';
+                }
+            }
         }
 
         function renderCategories() {
@@ -709,7 +720,6 @@
             
             const aboutSection = document.getElementById('about-section');
             if (aboutSection) {
-                // מציג את התוכן רק אם סומן 'הכל' וגם קיים תוכן בקובץ התוכן
                 aboutSection.style.display = (currentCategory === 'הכל' && typeof storyHTML !== 'undefined') ? 'block' : 'none';
             }
             
@@ -781,7 +791,6 @@
             imgEl.style.backgroundColor = variant.hasImage ? '#eee' : '#ffffff';
 
             document.getElementById(`desc-${productIndex}`).innerHTML = `${variant.description}${variant.dimensions}`;
-
             document.getElementById(`price-${productIndex}`).innerText = `₪${variant.price.toFixed(2)}`;
             
             const stockEl = document.getElementById(`stock-${productIndex}`);
@@ -946,7 +955,10 @@
 
             loadCatalog();
             updateCartUI();
-            setInterval(loadCatalog, 300000);
+            
+            // מכיוון שיש לנו עכשיו מסד נתונים אמיתי שיודע להודיע לנו על שינויים בזמן אמת, 
+            // אנחנו יכולים להשאיר את הריענון או לשדרג בעתיד ל-Realtime של Supabase!
+            setInterval(loadCatalog, 300000); 
         };
     </script>
 </body>
