@@ -30,6 +30,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            min-height: 100dvh; /* תיקון יציבות גובה לדפדפנים בנייד */
         }
         header {
             background-color: #fff;
@@ -519,7 +520,6 @@
         function renderProducts() {
             const container = document.getElementById('catalog-container');
             document.getElementById('loading').style.display = 'none';
-            container.innerHTML = '';
             
             const aboutSection = document.getElementById('about-section');
             if (aboutSection) aboutSection.style.display = (currentCategory === 'הכל' && typeof storyHTML !== 'undefined') ? 'block' : 'none';
@@ -532,6 +532,9 @@
                 return;
             }
 
+            // התיקון: בניית כל ה-HTML במכה אחת מונעת מהאתר "לקפוץ" ומהפוטר להשתגע
+            let allCardsHTML = '';
+            
             productsToShow.forEach((product) => {
                 const productIndex = allProducts.indexOf(product);
                 const defaultVariant = product.variants[0];
@@ -558,7 +561,7 @@
                     `;
                 }
 
-                container.innerHTML += `
+                allCardsHTML += `
                     <div class="product-card" id="card-${productIndex}">
                         <div class="product-image" id="img-${productIndex}" style="background-image: url('${defaultVariant.imageUrl}'); background-size: ${bgSize}; background-color: ${bgColor};"></div>
                         <div class="product-details">
@@ -582,6 +585,9 @@
                     </div>
                 `;
             });
+            
+            // הכנסת כל התוכן למסך בפעולה אחת שקטה ומהירה
+            container.innerHTML = allCardsHTML;
         }
 
         function selectVariant(productIndex, variantIndex) {
