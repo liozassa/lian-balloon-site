@@ -101,10 +101,7 @@
         .about-title { font-size: 1.6em; color: var(--text-color); margin-top: 0; margin-bottom: 15px; font-weight: 700; }
         .about-text { font-size: 1.1em; color: #555; line-height: 1.7; margin: 0; }
         
-        /* כפתור הוספת מוצר (מוסתר כברירת מחדל) */
-        #admin-add-btn-container {
-            text-align: center; margin: 30px auto 0; display: none;
-        }
+        #admin-add-btn-container { text-align: center; margin: 30px auto 0; display: none; }
         .admin-add-btn {
             background-color: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 25px;
             font-size: 1.2em; font-weight: bold; font-family: inherit; cursor: pointer; transition: background 0.3s;
@@ -174,9 +171,12 @@
         .form-group input, .form-group textarea {
             width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: inherit; font-size: 1em; box-sizing: border-box;
         }
+        .form-group input[type="file"] { padding: 5px; background: #f9f9f9; }
+        
         .submit-final-btn {
-            background-color: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1.1em; font-weight: bold; font-family: inherit; cursor: pointer; width: 100%; margin-top: 10px;
+            background-color: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1.1em; font-weight: bold; font-family: inherit; cursor: pointer; width: 100%; margin-top: 10px; transition: opacity 0.3s;
         }
+        .submit-final-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         
         #floating-whatsapp {
             position: fixed; bottom: 20px; left: 20px; background-color: #25D366; color: white; padding: 12px 20px; border-radius: 30px; font-size: 1.1em; font-weight: bold; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); cursor: pointer; z-index: 2000; transition: transform 0.3s ease;
@@ -215,7 +215,6 @@
     
     <div id="about-section" class="about-section"></div>
     
-    <!-- כפתור הוספת מוצר שיוצג רק למנהל -->
     <div id="admin-add-btn-container">
         <button class="admin-add-btn" onclick="openAddModal()">➕ הוסף בלון חדש</button>
     </div>
@@ -238,7 +237,6 @@
         </div>
     </div>
 
-    <!-- חלונית התחברות למנהל -->
     <div id="login-modal" class="modal-overlay" onclick="closeModal('login-modal')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-modal-btn" onclick="closeModal('login-modal')">×</button>
@@ -256,12 +254,13 @@
         </div>
     </div>
 
-    <!-- חלונית הוספת/עריכת מוצר -->
+    <!-- חלונית הוספת/עריכת מוצר - עם תמיכה בהעלאת תמונות -->
     <div id="edit-modal" class="modal-overlay" onclick="closeModal('edit-modal')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-modal-btn" onclick="closeModal('edit-modal')">×</button>
             <h3 id="modal-action-title">עריכת מוצר ✏️</h3>
             <input type="hidden" id="edit-id">
+            <input type="hidden" id="edit-existing-image-url"> <!-- שומר את הקישור הקיים למקרה שלא הועלתה תמונה חדשה -->
             
             <div class="form-group">
                 <label>שם הבלון:</label>
@@ -283,10 +282,14 @@
                 <label>כמות במלאי:</label>
                 <input type="number" id="edit-quantity" placeholder="0">
             </div>
+            
+            <!-- אזור התמונה החדש -->
             <div class="form-group">
-                <label>מזהה תמונה בדרייב (או קישור):</label>
-                <input type="text" id="edit-image" dir="ltr" placeholder="1aBcDeFgHiJkL...">
+                <label>העלאת תמונה:</label>
+                <input type="file" id="edit-image-file" accept="image/*">
+                <div id="current-image-status" style="margin-top:5px; font-size:0.85em; color:#7f8c8d;"></div>
             </div>
+
             <div class="form-group">
                 <label>תיאור (לא חובה):</label>
                 <textarea id="edit-description" rows="2" placeholder="תיאור קצר של הבלון..."></textarea>
@@ -299,7 +302,6 @@
         </div>
     </div>
 
-    <!-- חלונית טופס הזמנה -->
     <div id="checkout-modal-overlay" class="modal-overlay" onclick="closeModal('checkout-modal-overlay')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-modal-btn" onclick="closeModal('checkout-modal-overlay')">×</button>
@@ -323,9 +325,7 @@
         </div>
     </div>
 
-    <div id="floating-whatsapp" onclick="openWhatsAppSupport()">
-        💬 שאלה? התייעצו איתנו
-    </div>
+    <div id="floating-whatsapp" onclick="openWhatsAppSupport()">💬 שאלה? התייעצו איתנו</div>
 
     <script>
         if (typeof logoUrl !== 'undefined') { document.getElementById('header-logo').src = logoUrl; }
@@ -349,11 +349,11 @@
             if(isAdmin) {
                 btn.innerHTML = '🔓 התנתק';
                 btn.onclick = handleLogout;
-                addContainer.style.display = 'block'; // הצגת כפתור ההוספה
+                addContainer.style.display = 'block'; 
             } else {
                 btn.innerHTML = '🔒 מנהל';
                 btn.onclick = () => document.getElementById('login-modal').classList.add('show');
-                addContainer.style.display = 'none'; // הסתרת כפתור ההוספה
+                addContainer.style.display = 'none'; 
             }
         }
 
@@ -411,27 +411,15 @@
 
                     if (!productMap.has(name)) {
                         productMap.set(name, {
-                            name: name,
-                            safeTitle: name.replace(/'/g, "\\'").replace(/"/g, '"'),
-                            category: p.category ? p.category.toString().trim() : '',
-                            variants: []
+                            name: name, safeTitle: name.replace(/'/g, "\\'").replace(/"/g, '"'), category: p.category ? p.category.toString().trim() : '', variants: []
                         });
                     }
                     
                     productMap.get(name).variants.push({
-                        id: p.id,
-                        dbName: name,
-                        dbCategory: p.category ? p.category.toString().trim() : '',
-                        rawImage: rawImage,
-                        rawDescription: p.description ? p.description.toString() : '',
-                        rawDimensions: p.dimensions ? p.dimensions.toString() : '',
-                        color: color,
-                        price: price,
-                        stock: stock,
-                        imageUrl: imageUrl,
-                        hasImage: rawImage !== '',
-                        description: p.description ? p.description.toString() : 'אין תיאור זמין.',
-                        dimensions: p.dimensions ? `<br><b>מידות:</b> ${p.dimensions.toString()}` : ''
+                        id: p.id, dbName: name, dbCategory: p.category ? p.category.toString().trim() : '',
+                        rawImage: rawImage, rawDescription: p.description ? p.description.toString() : '', rawDimensions: p.dimensions ? p.dimensions.toString() : '',
+                        color: color, price: price, stock: stock, imageUrl: imageUrl, hasImage: rawImage !== '',
+                        description: p.description ? p.description.toString() : 'אין תיאור זמין.', dimensions: p.dimensions ? `<br><b>מידות:</b> ${p.dimensions.toString()}` : ''
                     });
                 });
 
@@ -580,7 +568,7 @@
             }
         }
 
-        // --- פונקציות ניהול: הוספה, עריכה ומחיקה --- //
+        // --- פונקציות ניהול --- //
 
         async function deleteProduct(id) {
             if (!confirm('האם את/ה בטוח/ה שברצונך למחוק מוצר זה לצמיתות?')) return;
@@ -589,25 +577,26 @@
             else loadCatalog();
         }
 
-        // פתיחת חלונית להוספת מוצר חדש (מנקה שדות)
         function openAddModal() {
             document.getElementById('modal-action-title').innerHTML = 'הוספת מוצר חדש 🎈';
             document.getElementById('save-product-btn').innerHTML = 'הוסף מוצר 🚀';
             
             document.getElementById('edit-id').value = '';
+            document.getElementById('edit-existing-image-url').value = '';
+            document.getElementById('edit-image-file').value = '';
+            document.getElementById('current-image-status').innerHTML = 'אין תמונה.';
+            
             document.getElementById('edit-name').value = '';
             document.getElementById('edit-color').value = '';
             document.getElementById('edit-category').value = '';
             document.getElementById('edit-price').value = '';
             document.getElementById('edit-quantity').value = '';
-            document.getElementById('edit-image').value = '';
             document.getElementById('edit-description').value = '';
             document.getElementById('edit-dimensions').value = '';
             
             document.getElementById('edit-modal').classList.add('show');
         }
 
-        // פתיחת חלונית לעריכת מוצר קיים (שואב נתונים)
         function openEditModal(id) {
             document.getElementById('modal-action-title').innerHTML = 'עריכת מוצר ✏️';
             document.getElementById('save-product-btn').innerHTML = 'שמור שינויים 💾';
@@ -617,26 +606,58 @@
             if (!targetVar) return;
 
             document.getElementById('edit-id').value = targetVar.id;
+            document.getElementById('edit-existing-image-url').value = targetVar.rawImage;
+            document.getElementById('edit-image-file').value = ''; // איפוס הקובץ
+            
+            if(targetVar.rawImage) {
+                document.getElementById('current-image-status').innerHTML = '🖼️ קיימת תמונה (העלאת קובץ תחליף אותה)';
+            } else {
+                document.getElementById('current-image-status').innerHTML = 'אין תמונה כרגע.';
+            }
+
             document.getElementById('edit-name').value = targetVar.dbName;
             document.getElementById('edit-color').value = targetVar.color;
             document.getElementById('edit-category').value = targetVar.dbCategory;
             document.getElementById('edit-price').value = targetVar.price;
             document.getElementById('edit-quantity').value = targetVar.stock;
-            document.getElementById('edit-image').value = targetVar.rawImage;
             document.getElementById('edit-description').value = targetVar.rawDescription;
             document.getElementById('edit-dimensions').value = targetVar.rawDimensions;
             
             document.getElementById('edit-modal').classList.add('show');
         }
 
-        // שמירת הנתונים (יודע לזהות אם זו הוספה חדשה או עריכה)
         async function saveProduct() {
             const id = document.getElementById('edit-id').value;
             const name = document.getElementById('edit-name').value.trim();
+            const btn = document.getElementById('save-product-btn');
             
-            if (!name) {
-                alert('חובה להזין לפחות שם מוצר!');
-                return;
+            if (!name) { alert('חובה להזין לפחות שם מוצר!'); return; }
+
+            const originalBtnText = btn.innerHTML;
+            btn.innerHTML = 'שומר... ⏳';
+            btn.disabled = true;
+
+            // טיפול בהעלאת התמונה ל-Storage
+            let finalImageUrl = document.getElementById('edit-existing-image-url').value;
+            const fileInput = document.getElementById('edit-image-file');
+
+            if (fileInput.files.length > 0) {
+                btn.innerHTML = 'מעלה תמונה... ⏳';
+                const file = fileInput.files[0];
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+                const { data, error: uploadError } = await supabaseClient.storage.from('balloons').upload(fileName, file);
+                
+                if (uploadError) {
+                    alert('שגיאה בהעלאת התמונה: ' + uploadError.message);
+                    btn.innerHTML = originalBtnText;
+                    btn.disabled = false;
+                    return;
+                }
+
+                const { data: publicUrlData } = supabaseClient.storage.from('balloons').getPublicUrl(fileName);
+                finalImageUrl = publicUrlData.publicUrl;
             }
 
             const productData = {
@@ -645,27 +666,28 @@
                 category: document.getElementById('edit-category').value.trim(),
                 price: parseFloat(document.getElementById('edit-price').value) || 0,
                 quantity: parseInt(document.getElementById('edit-quantity').value) || 0,
-                image_url: document.getElementById('edit-image').value.trim(),
+                image_url: finalImageUrl,
                 description: document.getElementById('edit-description').value.trim(),
                 dimensions: document.getElementById('edit-dimensions').value.trim()
             };
 
             let error;
             if (id === '') {
-                // הוספת מוצר חדש (INSERT)
                 const res = await supabaseClient.from('products').insert([productData]);
                 error = res.error;
             } else {
-                // עדכון מוצר קיים (UPDATE)
                 const res = await supabaseClient.from('products').update(productData).eq('id', id);
                 error = res.error;
             }
+
+            btn.innerHTML = originalBtnText;
+            btn.disabled = false;
 
             if (error) {
                 alert('שגיאה בשמירה: ' + error.message);
             } else {
                 closeModal('edit-modal');
-                loadCatalog(); // רענון לאחר העדכון או ההוספה
+                loadCatalog(); 
             }
         }
         // ------------------------------------ //
@@ -674,10 +696,7 @@
             const decodedTitle = title.replace(/"/g, '"');
             const itemFullName = color ? `${decodedTitle} (${color})` : decodedTitle;
             const existingItem = cart.find(item => item.title === itemFullName);
-            
-            if (existingItem) existingItem.quantity += 1;
-            else cart.push({ title: itemFullName, price: price, quantity: 1 });
-            
+            if (existingItem) existingItem.quantity += 1; else cart.push({ title: itemFullName, price: price, quantity: 1 });
             updateCartUI();
             const cartIcon = document.getElementById('cart-icon-container');
             cartIcon.style.transform = 'scale(1.2)';
@@ -690,10 +709,7 @@
             updateCartUI();
         }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCartUI();
-        }
+        function removeFromCart(index) { cart.splice(index, 1); updateCartUI(); }
 
         function updateCartUI() {
             const cartItemsContainer = document.getElementById('cart-items');
@@ -704,8 +720,7 @@
                 cartItemsContainer.innerHTML = '<p style="text-align:center; color: #888; margin-top:30px;">העגלה ריקה.<br>בואו נוסיף חיוכים!</p>';
             } else {
                 cart.forEach((item, index) => {
-                    totalItems += item.quantity;
-                    totalPrice += item.price * item.quantity;
+                    totalItems += item.quantity; totalPrice += item.price * item.quantity;
                     cartItemsContainer.innerHTML += `
                         <div class="cart-item">
                             <div class="cart-item-details">
