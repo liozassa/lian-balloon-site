@@ -27,6 +27,9 @@
             color: var(--text-color);
             direction: rtl;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         header {
             background-color: #fff;
@@ -94,6 +97,10 @@
         }
         .category-btn:hover { background-color: #ffeaea; }
         .category-btn.active { background-color: var(--primary-color); color: #fff; box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3); }
+
+        .main-content {
+            flex-grow: 1; /* דוחף את הפוטר למטה */
+        }
 
         .about-section {
             background-color: #fff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); padding: 40px; max-width: 1200px; width: calc(100% - 80px); margin: 40px auto 0px; text-align: center; border-top: 4px solid var(--primary-color); box-sizing: border-box;
@@ -185,6 +192,27 @@
 
         #loading { text-align: center; font-size: 1.2em; margin-top: 50px; color: var(--stock-color); }
 
+        /* אזור הפוטר (תחתית האתר) */
+        .site-footer {
+            background-color: #fff;
+            padding: 20px;
+            margin-top: auto; /* דוחף אותו תמיד לתחתית */
+            border-top: 1px solid #eee;
+            color: var(--stock-color);
+            font-size: 0.95em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .version-tag {
+            position: absolute;
+            left: 20px;
+            font-size: 0.85em;
+            color: #bdc3c7;
+            font-weight: 500;
+        }
+
         @media (max-width: 600px) {
             .about-section { width: calc(100% - 40px); margin: 20px auto 0px; padding: 20px; }
             #catalog-container { padding: 20px; gap: 20px; }
@@ -194,6 +222,16 @@
             #admin-auth-btn { top: 15px; left: 15px; padding: 5px 8px; font-size: 0.8em; }
             #cart-icon-container { top: 15px; right: 15px; width: 40px; height: 40px; font-size: 1.2em; }
             .cart-footer { padding-bottom: 30px; }
+            
+            /* התאמת הפוטר למובייל כדי שלא יתנגש בוואטסאפ */
+            .site-footer {
+                padding-bottom: 80px; 
+                flex-direction: column;
+                gap: 5px;
+            }
+            .version-tag {
+                position: static;
+            }
         }
     </style>
 </head>
@@ -211,16 +249,25 @@
         <div id="categories-container"></div>
     </header>
 
-    <div id="loading">טוען נתונים מהשרת...</div>
-    
-    <div id="about-section" class="about-section"></div>
-    
-    <div id="admin-add-btn-container">
-        <button class="admin-add-btn" onclick="openAddModal()">➕ הוסף בלון חדש</button>
-    </div>
+    <!-- עוטף את התוכן כדי להבטיח שהפוטר יישאר למטה -->
+    <div class="main-content">
+        <div id="loading">טוען נתונים מהשרת...</div>
+        
+        <div id="about-section" class="about-section"></div>
+        
+        <div id="admin-add-btn-container">
+            <button class="admin-add-btn" onclick="openAddModal()">➕ הוסף בלון חדש</button>
+        </div>
 
-    <div id="catalog-container"></div>
+        <div id="catalog-container"></div>
+    </div>
     
+    <!-- הפוטר החדש -->
+    <footer class="site-footer">
+        © כל הזכויות שמורות ל"חיוך על חוט"
+        <span class="version-tag" id="site-version-display"></span>
+    </footer>
+
     <div id="cart-overlay" class="modal-overlay" onclick="toggleCart()"></div>
     <div id="cart-sidebar">
         <div class="cart-header">
@@ -254,13 +301,13 @@
         </div>
     </div>
 
-    <!-- חלונית הוספת/עריכת מוצר - עם תמיכה בהעלאת תמונות -->
+    <!-- חלונית הוספת/עריכת מוצר -->
     <div id="edit-modal" class="modal-overlay" onclick="closeModal('edit-modal')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-modal-btn" onclick="closeModal('edit-modal')">×</button>
             <h3 id="modal-action-title">עריכת מוצר ✏️</h3>
             <input type="hidden" id="edit-id">
-            <input type="hidden" id="edit-existing-image-url"> <!-- שומר את הקישור הקיים למקרה שלא הועלתה תמונה חדשה -->
+            <input type="hidden" id="edit-existing-image-url"> 
             
             <div class="form-group">
                 <label>שם הבלון:</label>
@@ -283,7 +330,6 @@
                 <input type="number" id="edit-quantity" placeholder="0">
             </div>
             
-            <!-- אזור התמונה החדש -->
             <div class="form-group">
                 <label>העלאת תמונה:</label>
                 <input type="file" id="edit-image-file" accept="image/*">
@@ -328,6 +374,13 @@
     <div id="floating-whatsapp" onclick="openWhatsAppSupport()">💬 שאלה? התייעצו איתנו</div>
 
     <script>
+        // שאיבת הגרסה מההגדרות
+        if (typeof siteVersion !== 'undefined') {
+            document.getElementById('site-version-display').innerText = 'v' + siteVersion;
+        } else {
+            document.getElementById('site-version-display').innerText = 'v1.0.0';
+        }
+
         if (typeof logoUrl !== 'undefined') { document.getElementById('header-logo').src = logoUrl; }
         
         let cart = [];
@@ -389,7 +442,7 @@
 
         async function loadCatalog() {
             try {
-                const { data, error } = await supabaseClient.from('products').select('*');
+                const { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
                 if (error) throw error;
 
                 let productMap = new Map();
@@ -568,8 +621,6 @@
             }
         }
 
-        // --- פונקציות ניהול --- //
-
         async function deleteProduct(id) {
             if (!confirm('האם את/ה בטוח/ה שברצונך למחוק מוצר זה לצמיתות?')) return;
             const { error } = await supabaseClient.from('products').delete().eq('id', id);
@@ -607,7 +658,7 @@
 
             document.getElementById('edit-id').value = targetVar.id;
             document.getElementById('edit-existing-image-url').value = targetVar.rawImage;
-            document.getElementById('edit-image-file').value = ''; // איפוס הקובץ
+            document.getElementById('edit-image-file').value = ''; 
             
             if(targetVar.rawImage) {
                 document.getElementById('current-image-status').innerHTML = '🖼️ קיימת תמונה (העלאת קובץ תחליף אותה)';
@@ -637,7 +688,6 @@
             btn.innerHTML = 'שומר... ⏳';
             btn.disabled = true;
 
-            // טיפול בהעלאת התמונה ל-Storage
             let finalImageUrl = document.getElementById('edit-existing-image-url').value;
             const fileInput = document.getElementById('edit-image-file');
 
@@ -690,7 +740,6 @@
                 loadCatalog(); 
             }
         }
-        // ------------------------------------ //
 
         function addToCart(title, color, price) {
             const decodedTitle = title.replace(/"/g, '"');

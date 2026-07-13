@@ -12,3 +12,6 @@ const logoUrl = 'https://drive.google.com/thumbnail?id=1kyMX2_jqdaztDt-0eaXdG0rY
 
 // 3. מספר הטלפון לוואטסאפ (קידומת 972, בלי אפס בהתחלה)
 const whatsappNumber = '972508114394';
+
+// המשתנה החדש של הגרסה:
+var siteVersion = '2.0.1';
