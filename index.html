@@ -30,7 +30,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            min-height: 100dvh; /* תיקון יציבות גובה לדפדפנים בנייד */
+            min-height: 100dvh;
         }
         header {
             background-color: #fff;
@@ -100,7 +100,7 @@
         .category-btn.active { background-color: var(--primary-color); color: #fff; box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3); }
 
         .main-content {
-            flex-grow: 1; /* דוחף את הפוטר למטה */
+            flex-grow: 1; 
         }
 
         .about-section {
@@ -193,22 +193,22 @@
 
         #loading { text-align: center; font-size: 1.2em; margin-top: 50px; color: var(--stock-color); }
 
-        /* אזור הפוטר (תחתית האתר) */
+        /* אזור הפוטר מוסתר כברירת מחדל עד לסיום הטעינה */
         .site-footer {
+            display: none; 
             background-color: #fff;
             padding: 20px;
-            margin-top: auto; /* דוחף אותו תמיד לתחתית */
+            margin-top: auto; 
             border-top: 1px solid #eee;
             color: var(--stock-color);
             font-size: 0.95em;
-            display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
         }
         .version-tag {
             position: absolute;
-            left: 20px;
+            right: 20px; /* הועבר לימין */
             font-size: 0.85em;
             color: #bdc3c7;
             font-weight: 500;
@@ -224,7 +224,6 @@
             #cart-icon-container { top: 15px; right: 15px; width: 40px; height: 40px; font-size: 1.2em; }
             .cart-footer { padding-bottom: 30px; }
             
-            /* התאמת הפוטר למובייל כדי שלא יתנגש בוואטסאפ */
             .site-footer {
                 padding-bottom: 80px; 
                 flex-direction: column;
@@ -232,6 +231,10 @@
             }
             .version-tag {
                 position: static;
+                width: 100%;
+                text-align: right; /* יישור לימין גם בנייד */
+                padding-right: 15px;
+                box-sizing: border-box;
             }
         }
     </style>
@@ -250,7 +253,6 @@
         <div id="categories-container"></div>
     </header>
 
-    <!-- עוטף את התוכן כדי להבטיח שהפוטר יישאר למטה -->
     <div class="main-content">
         <div id="loading">טוען נתונים מהשרת...</div>
         
@@ -263,8 +265,7 @@
         <div id="catalog-container"></div>
     </div>
     
-    <!-- הפוטר החדש -->
-    <footer class="site-footer">
+    <footer class="site-footer" id="site-footer">
         © כל הזכויות שמורות ל"חיוך על חוט"
         <span class="version-tag" id="site-version-display"></span>
     </footer>
@@ -302,7 +303,6 @@
         </div>
     </div>
 
-    <!-- חלונית הוספת/עריכת מוצר -->
     <div id="edit-modal" class="modal-overlay" onclick="closeModal('edit-modal')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-modal-btn" onclick="closeModal('edit-modal')">×</button>
@@ -375,7 +375,6 @@
     <div id="floating-whatsapp" onclick="openWhatsAppSupport()">💬 שאלה? התייעצו איתנו</div>
 
     <script>
-        // שאיבת הגרסה מההגדרות
         if (typeof siteVersion !== 'undefined') {
             document.getElementById('site-version-display').innerText = 'v' + siteVersion;
         } else {
@@ -486,6 +485,8 @@
                 if (document.getElementById('catalog-container').children.length === 0) {
                     document.getElementById('loading').innerHTML = 'שגיאה בטעינת נתונים.';
                 }
+                // במקרה של שגיאה, עדיין נציג את הפוטר
+                document.getElementById('site-footer').style.display = 'flex';
             }
         }
 
@@ -529,10 +530,10 @@
 
             if (productsToShow.length === 0) {
                 container.innerHTML = '<div style="text-align:center; grid-column: 1/-1;">אין כרגע מוצרים זמינים.</div>';
+                document.getElementById('site-footer').style.display = 'flex';
                 return;
             }
 
-            // התיקון: בניית כל ה-HTML במכה אחת מונעת מהאתר "לקפוץ" ומהפוטר להשתגע
             let allCardsHTML = '';
             
             productsToShow.forEach((product) => {
@@ -586,8 +587,10 @@
                 `;
             });
             
-            // הכנסת כל התוכן למסך בפעולה אחת שקטה ומהירה
             container.innerHTML = allCardsHTML;
+            
+            // חשיפת הפוטר רק לאחר שכל המוצרים סיימו להיטען למסך
+            document.getElementById('site-footer').style.display = 'flex';
         }
 
         function selectVariant(productIndex, variantIndex) {
